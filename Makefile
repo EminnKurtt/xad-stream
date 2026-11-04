@@ -1,5 +1,5 @@
 .RECIPEPREFIX = >
-.PHONY: install test lint format
+.PHONY: install test lint format data
 
 install:
 > python -m pip install --upgrade pip
@@ -14,3 +14,6 @@ lint:
 
 format:
 > ruff format .
+
+data:
+> bash scripts/download_skab.sh
