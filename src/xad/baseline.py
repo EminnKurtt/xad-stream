@@ -33,6 +33,12 @@ def train_end_index(labels, n_train: int = 400, margin: int = 5) -> int:
     return max(10, min(n_train, first - margin))
 
 
+def isolation_forest_scorer(X_fit: np.ndarray, seed: int = 0):
+    """Fit scikit-learn's Isolation Forest; return a function giving higher = more anomalous."""
+    model = IsolationForest(n_estimators=200, random_state=seed).fit(X_fit)
+    return lambda X: -model.score_samples(X)
+
+
 def run_experiment(
     df_exp: pd.DataFrame,
     n_train: int = 400,
@@ -40,12 +46,15 @@ def run_experiment(
     quantile: float = 0.99,
     seed: int = 0,
     calib_frac: float = 0.0,
+    fit_scorer=isolation_forest_scorer,
 ) -> dict:
     """Fit on the normal prefix, score the whole experiment, evaluate after it.
 
     With `calib_frac > 0` the last `calib_frac` of the prefix is held out: the
     scaler and model are fit on the rest, and the threshold is the `quantile`
     of the held-out scores (in-sample scores are optimistically low).
+    `fit_scorer(X_fit, seed)` fits a model on standardised rows and returns a
+    function mapping rows to anomaly scores (higher = more anomalous).
     """
     if not 0.0 <= calib_frac < 1.0:
         raise ValueError(f"calib_frac must be in [0, 1), got {calib_frac}")
@@ -56,8 +65,7 @@ def run_experiment(
 
     scaler = StandardScaler().fit(X.iloc[:fit_end])
     Xs = scaler.transform(X)
-    model = IsolationForest(n_estimators=200, random_state=seed).fit(Xs[:fit_end])
-    score = -model.score_samples(Xs)  # higher = more anomalous
+    score = fit_scorer(Xs[:fit_end], seed)(Xs)
     calib = score[fit_end:end] if fit_end < end else score[:end]
     threshold = np.quantile(calib, quantile)
     pred = (score > threshold).astype(int)
