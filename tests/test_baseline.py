@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import pytest
 
 from xad.baseline import make_features, run_experiment, train_end_index
 from xad.data import SENSOR_COLUMNS
@@ -41,3 +42,15 @@ def test_run_experiment_detects_multichannel_shift():
     assert result["n_train"] == 400
     assert result["roc_auc"] > 0.95
     assert result["f1"] > 0.8
+
+
+def test_run_experiment_with_calibration():
+    result = run_experiment(_synthetic(), calib_frac=0.25)
+    assert result["n_train"] == 400  # evaluation still starts after the prefix
+    assert result["roc_auc"] > 0.95
+    assert result["f1"] > 0.8
+
+
+def test_run_experiment_rejects_bad_calib_frac():
+    with pytest.raises(ValueError):
+        run_experiment(_synthetic(), calib_frac=1.0)

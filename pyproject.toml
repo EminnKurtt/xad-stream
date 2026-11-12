@@ -9,7 +9,7 @@ description = "Explainable anomaly detection on streaming industrial sensor data
 readme = "README.md"
 requires-python = ">=3.11"
 license = "MIT"
-dependencies = ["pandas"]
+dependencies = ["numpy", "pandas", "scikit-learn"]
 
 [tool.setuptools.packages.find]
 where = ["src"]

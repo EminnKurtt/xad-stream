@@ -39,17 +39,27 @@ def run_experiment(
     rolling: int = 0,
     quantile: float = 0.99,
     seed: int = 0,
+    calib_frac: float = 0.0,
 ) -> dict:
-    """Fit on the normal prefix, score the whole experiment, evaluate after it."""
+    """Fit on the normal prefix, score the whole experiment, evaluate after it.
+
+    With `calib_frac > 0` the last `calib_frac` of the prefix is held out: the
+    scaler and model are fit on the rest, and the threshold is the `quantile`
+    of the held-out scores (in-sample scores are optimistically low).
+    """
+    if not 0.0 <= calib_frac < 1.0:
+        raise ValueError(f"calib_frac must be in [0, 1), got {calib_frac}")
     X = make_features(df_exp, rolling)
     y = df_exp["anomaly"].to_numpy()
     end = train_end_index(y, n_train)
+    fit_end = end - int(end * calib_frac)
 
-    scaler = StandardScaler().fit(X.iloc[:end])
+    scaler = StandardScaler().fit(X.iloc[:fit_end])
     Xs = scaler.transform(X)
-    model = IsolationForest(n_estimators=200, random_state=seed).fit(Xs[:end])
+    model = IsolationForest(n_estimators=200, random_state=seed).fit(Xs[:fit_end])
     score = -model.score_samples(Xs)  # higher = more anomalous
-    threshold = np.quantile(score[:end], quantile)
+    calib = score[fit_end:end] if fit_end < end else score[:end]
+    threshold = np.quantile(calib, quantile)
     pred = (score > threshold).astype(int)
 
     y_eval, pred_eval, score_eval = y[end:], pred[end:], score[end:]
