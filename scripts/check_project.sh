@@ -23,10 +23,19 @@ no_large_tracked() {
     return 0
 }
 
+readme_matches_csvs() {
+    local line
+    while IFS= read -r line; do
+        [ -z "$line" ] && continue
+        grep -qxF -- "$line" README.md || return 1
+    done < <(python scripts/results_table.py)
+}
+
 check "make test" make test
 check "make lint" make lint
 check "working tree clean" test -z "$(git status --porcelain)"
 check "data/ not tracked" test -z "$(git ls-files data)"
 check "no tracked file above 1 MB" no_large_tracked
+check "README tables match docs/*.csv" readme_matches_csvs
 
 exit $status

@@ -1,7 +1,7 @@
 # Data: SKAB (Skoltech Anomaly Benchmark)
 
 Source: https://github.com/waico/SKAB (downloaded with `make data` into `data/raw/SKAB`; not committed).
-License: see the upstream repository (to be confirmed and cited in the README).
+License: GPL-3.0 (upstream `LICENSE`). SKAB is downloaded, not redistributed. Citation: Katser and Kozitsin, *Skoltech Anomaly Benchmark (SKAB)*, 2020 (see the upstream README).
 
 ## What it is
 Multivariate sensor time series from a water-circulation test bench, recorded at 1 Hz.
