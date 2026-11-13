@@ -11,6 +11,9 @@ requires-python = ">=3.11"
 license = "MIT"
 dependencies = ["numpy", "pandas", "scikit-learn"]
 
+[project.optional-dependencies]
+stream = ["kafka-python==2.3.3"]  # only for the streaming demo (docker compose)
+
 [tool.setuptools.packages.find]
 where = ["src"]
 

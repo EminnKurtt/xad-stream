@@ -91,7 +91,8 @@ Across all experiments the result is mixed:
   mean difference, which misses changes in variance or in correlations.
 - **High anomaly rate.** About half of the evaluated rows are anomalous, so F1 must be read
   against the flag-everything reference.
-- **No streaming yet.** Scoring is offline, on whole recorded experiments.
+- **Streaming is a demo only.** The results above are offline. The streaming demo replays
+  recorded data with a fixed model and has no separate evaluation.
 
 ## Reproduce
 
@@ -104,6 +105,7 @@ python scripts/compare_models.py      # docs/compare_if_vs_eif*.csv (under a min
 python scripts/explain_skab.py        # docs/explanation_* figures and CSVs
 python scripts/results_table.py       # the README tables, from the CSVs
 bash scripts/check_project.sh         # tests, lint, clean tree, README matches CSVs
+make stream                           # streaming demo in Docker Compose (docs/streaming.md)
 ```
 
 All runs are seeded. The tests use synthetic data and do not need SKAB.
@@ -117,9 +119,11 @@ Dataset notes are in [`docs/data.md`](docs/data.md).
 
 ## Roadmap
 
-- Streaming replay: a producer sends a SKAB experiment to a Redpanda topic, and a consumer
-  scores each row with the fitted EIF and logs alarms with their top sensors.
-- Docker Compose setup for the streaming demo.
+- **v0.2 preview, available now:** a streaming replay. A producer sends a SKAB experiment
+  to a Redpanda topic, and a consumer scores each row with the EIF and logs alarms with
+  their top sensors. It runs in Docker Compose (`make stream`); see
+  [`docs/streaming.md`](docs/streaming.md).
+- Alarm grouping and periodic refitting to handle slow drift.
 - A small dashboard for scores, alarms and sensor importance.
 
 ## References
@@ -133,7 +137,7 @@ Dataset notes are in [`docs/data.md`](docs/data.md).
 - M. Carletti, M. Terzi, G. A. Susto. *Interpretable Anomaly Detection with DIFFI:
   Depth-based Isolation Forest Feature Importance.*
   [arXiv:2007.11117](https://arxiv.org/abs/2007.11117)
-- SKAB: https://github.com/waico/SKAB
+- SKAB: <https://github.com/waico/SKAB>
 
 ## License
 

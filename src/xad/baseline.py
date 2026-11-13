@@ -61,18 +61,16 @@ class ExperimentRun:
     threshold: float
 
 
-def fit_experiment(
-    df_exp: pd.DataFrame,
-    n_train: int = 400,
-    rolling: int = 0,
+def fit_detector(
+    X_prefix,
     quantile: float = 0.99,
     seed: int = 0,
     calib_frac: float = 0.0,
     make_model=IsolationForestDetector,
-) -> ExperimentRun:
-    """Fit on the normal prefix and score the whole experiment.
+) -> tuple[StandardScaler, object, float]:
+    """Fit a scaler, a detector and an alarm threshold on known-normal rows.
 
-    With `calib_frac > 0` the last `calib_frac` of the prefix is held out: the
+    With `calib_frac > 0` the last `calib_frac` of the rows is held out: the
     scaler and model are fit on the rest, and the threshold is the `quantile`
     of the held-out scores (in-sample scores are optimistically low).
     `make_model(random_state)` returns an unfitted detector with `fit` and a
@@ -80,16 +78,28 @@ def fit_experiment(
     """
     if not 0.0 <= calib_frac < 1.0:
         raise ValueError(f"calib_frac must be in [0, 1), got {calib_frac}")
-    X = make_features(df_exp, rolling)
+    X_prefix = np.asarray(X_prefix, dtype=float)
+    fit_end = len(X_prefix) - int(len(X_prefix) * calib_frac)
+    scaler = StandardScaler().fit(X_prefix[:fit_end])
+    Xs = scaler.transform(X_prefix)
+    model = make_model(seed).fit(Xs[:fit_end])
+    calib = Xs[fit_end:] if fit_end < len(Xs) else Xs
+    return scaler, model, float(np.quantile(model.score_samples(calib), quantile))
+
+
+def fit_experiment(
+    df_exp: pd.DataFrame,
+    n_train: int = 400,
+    rolling: int = 0,
+    **fit_kwargs,
+) -> ExperimentRun:
+    """Fit with `fit_detector(**fit_kwargs)` on the normal prefix; score the whole experiment."""
+    X = make_features(df_exp, rolling).to_numpy(dtype=float)
     y = df_exp["anomaly"].to_numpy()
     end = train_end_index(y, n_train)
-    fit_end = end - int(end * calib_frac)
-
-    Xs = StandardScaler().fit(X.iloc[:fit_end]).transform(X)
-    model = make_model(seed).fit(Xs[:fit_end])
-    score = model.score_samples(Xs)
-    calib = score[fit_end:end] if fit_end < end else score[:end]
-    return ExperimentRun(model, Xs, y, end, score, float(np.quantile(calib, quantile)))
+    scaler, model, threshold = fit_detector(X[:end], **fit_kwargs)
+    Xs = scaler.transform(X)
+    return ExperimentRun(model, Xs, y, end, model.score_samples(Xs), threshold)
 
 
 def run_experiment(df_exp: pd.DataFrame, **kwargs) -> dict:

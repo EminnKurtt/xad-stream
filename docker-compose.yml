@@ -1,0 +1,42 @@
+# Streaming demo: replay one SKAB experiment through Redpanda and score it with the EIF.
+# Needs SKAB in data/raw/SKAB (`make data`). See docs/streaming.md.
+services:
+  redpanda:
+    image: redpandadata/redpanda:v26.2.6
+    command:
+      - redpanda
+      - start
+      - --mode=dev-container
+      - --smp=1
+      - --kafka-addr=0.0.0.0:9092
+      - --advertise-kafka-addr=redpanda:9092
+    healthcheck:
+      test: ["CMD-SHELL", "rpk cluster health | grep -E 'Healthy:.+true' || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 24
+
+  consumer:
+    build: .
+    command: ["python", "scripts/stream_consumer.py"]
+    environment:
+      BOOTSTRAP: redpanda:9092
+      TOPIC: skab
+    depends_on:
+      redpanda:
+        condition: service_healthy
+
+  producer:
+    build: .
+    command: ["python", "scripts/stream_producer.py"]
+    environment:
+      BOOTSTRAP: redpanda:9092
+      TOPIC: skab
+      EXPERIMENT: ${EXPERIMENT:-valve1/0}
+      RATE: ${RATE:-10}
+      DATA_ROOT: /data/SKAB
+    volumes:
+      - ./data/raw/SKAB:/data/SKAB:ro
+    depends_on:
+      redpanda:
+        condition: service_healthy
