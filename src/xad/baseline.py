@@ -6,6 +6,8 @@ part of that experiment and evaluated on the rows after it.
 
 from __future__ import annotations
 
+from dataclasses import dataclass
+
 import numpy as np
 import pandas as pd
 from sklearn.ensemble import IsolationForest
@@ -33,28 +35,48 @@ def train_end_index(labels, n_train: int = 400, margin: int = 5) -> int:
     return max(10, min(n_train, first - margin))
 
 
-def isolation_forest_scorer(X_fit: np.ndarray, seed: int = 0):
-    """Fit scikit-learn's Isolation Forest; return a function giving higher = more anomalous."""
-    model = IsolationForest(n_estimators=200, random_state=seed).fit(X_fit)
-    return lambda X: -model.score_samples(X)
+class IsolationForestDetector:
+    """scikit-learn's Isolation Forest with `score_samples` flipped: higher = more anomalous."""
+
+    def __init__(self, random_state: int | None = None):
+        self.model = IsolationForest(n_estimators=200, random_state=random_state)
+
+    def fit(self, X) -> IsolationForestDetector:
+        self.model.fit(X)
+        return self
+
+    def score_samples(self, X) -> np.ndarray:
+        return -self.model.score_samples(X)
 
 
-def run_experiment(
+@dataclass
+class ExperimentRun:
+    """A detector fitted on one experiment's normal prefix, with scores for every row."""
+
+    model: object
+    X: np.ndarray  # standardised features of all rows
+    y: np.ndarray  # anomaly labels
+    end: int  # first evaluated row (end of the normal prefix)
+    score: np.ndarray  # higher = more anomalous
+    threshold: float
+
+
+def fit_experiment(
     df_exp: pd.DataFrame,
     n_train: int = 400,
     rolling: int = 0,
     quantile: float = 0.99,
     seed: int = 0,
     calib_frac: float = 0.0,
-    fit_scorer=isolation_forest_scorer,
-) -> dict:
-    """Fit on the normal prefix, score the whole experiment, evaluate after it.
+    make_model=IsolationForestDetector,
+) -> ExperimentRun:
+    """Fit on the normal prefix and score the whole experiment.
 
     With `calib_frac > 0` the last `calib_frac` of the prefix is held out: the
     scaler and model are fit on the rest, and the threshold is the `quantile`
     of the held-out scores (in-sample scores are optimistically low).
-    `fit_scorer(X_fit, seed)` fits a model on standardised rows and returns a
-    function mapping rows to anomaly scores (higher = more anomalous).
+    `make_model(random_state)` returns an unfitted detector with `fit` and a
+    `score_samples` where higher = more anomalous.
     """
     if not 0.0 <= calib_frac < 1.0:
         raise ValueError(f"calib_frac must be in [0, 1), got {calib_frac}")
@@ -63,17 +85,25 @@ def run_experiment(
     end = train_end_index(y, n_train)
     fit_end = end - int(end * calib_frac)
 
-    scaler = StandardScaler().fit(X.iloc[:fit_end])
-    Xs = scaler.transform(X)
-    score = fit_scorer(Xs[:fit_end], seed)(Xs)
+    Xs = StandardScaler().fit(X.iloc[:fit_end]).transform(X)
+    model = make_model(seed).fit(Xs[:fit_end])
+    score = model.score_samples(Xs)
     calib = score[fit_end:end] if fit_end < end else score[:end]
-    threshold = np.quantile(calib, quantile)
-    pred = (score > threshold).astype(int)
+    return ExperimentRun(model, Xs, y, end, score, float(np.quantile(calib, quantile)))
 
-    y_eval, pred_eval, score_eval = y[end:], pred[end:], score[end:]
+
+def run_experiment(df_exp: pd.DataFrame, **kwargs) -> dict:
+    """Fit with `fit_experiment(**kwargs)` and compute metrics on the rows after the prefix."""
+    run = fit_experiment(df_exp, **kwargs)
+    pred = (run.score > run.threshold).astype(int)
+    y_eval, pred_eval, score_eval = (
+        run.y[run.end :],
+        pred[run.end :],
+        run.score[run.end :],
+    )
     both_classes = len(np.unique(y_eval)) == 2
     return {
-        "n_train": end,
+        "n_train": run.end,
         "precision": precision_score(y_eval, pred_eval, zero_division=0),
         "recall": recall_score(y_eval, pred_eval, zero_division=0),
         "f1": f1_score(y_eval, pred_eval, zero_division=0),

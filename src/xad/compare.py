@@ -10,21 +10,19 @@ from __future__ import annotations
 import numpy as np
 import pandas as pd
 
-from xad.baseline import isolation_forest_scorer, run_experiment, train_end_index
+from xad.baseline import IsolationForestDetector, run_experiment, train_end_index
 from xad.eif import ExtendedIsolationForest
 
 PROTOCOL = {"calib_frac": 0.25, "quantile": 0.95}
 METRICS = ["precision", "recall", "f1", "roc_auc"]
 
 
-def eif_scorer(X_fit, seed: int = 0):
-    """Fit a fully extended EIF with the same tree count as the Isolation Forest."""
-    return (
-        ExtendedIsolationForest(n_trees=200, random_state=seed).fit(X_fit).score_samples
-    )
+def make_eif(random_state: int | None = None) -> ExtendedIsolationForest:
+    """Fully extended EIF with the same tree count as the Isolation Forest."""
+    return ExtendedIsolationForest(n_trees=200, random_state=random_state)
 
 
-MODELS = {"IF": isolation_forest_scorer, "EIF": eif_scorer}
+MODELS = {"IF": IsolationForestDetector, "EIF": make_eif}
 
 
 def compare_models(df: pd.DataFrame, models=MODELS, seed: int = 0) -> pd.DataFrame:
@@ -33,9 +31,9 @@ def compare_models(df: pd.DataFrame, models=MODELS, seed: int = 0) -> pd.DataFra
         {
             "model": model,
             "experiment": name,
-            **run_experiment(group, seed=seed, fit_scorer=fit_scorer, **PROTOCOL),
+            **run_experiment(group, seed=seed, make_model=make_model, **PROTOCOL),
         }
-        for model, fit_scorer in models.items()
+        for model, make_model in models.items()
         for name, group in df.groupby("experiment", sort=True)
     ]
     return pd.DataFrame(rows)

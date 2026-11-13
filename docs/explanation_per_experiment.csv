@@ -1,0 +1,35 @@
+experiment,top3_share_in,top3_shift,overlap
+other/1,Temperature|Volume Flow RateRMS|Thermocouple,Temperature|Volume Flow RateRMS|Thermocouple,3
+other/10,Thermocouple|Volume Flow RateRMS|Temperature,Volume Flow RateRMS|Thermocouple|Accelerometer2RMS,2
+other/11,Thermocouple|Accelerometer2RMS|Accelerometer1RMS,Accelerometer2RMS|Volume Flow RateRMS|Accelerometer1RMS,2
+other/12,Volume Flow RateRMS|Thermocouple|Temperature,Volume Flow RateRMS|Accelerometer1RMS|Accelerometer2RMS,1
+other/13,Thermocouple|Pressure|Temperature,Thermocouple|Accelerometer2RMS|Volume Flow RateRMS,1
+other/14,Thermocouple|Volume Flow RateRMS|Accelerometer2RMS,Thermocouple|Volume Flow RateRMS|Accelerometer2RMS,3
+other/2,Temperature|Thermocouple|Volume Flow RateRMS,Volume Flow RateRMS|Accelerometer1RMS|Temperature,2
+other/3,Volume Flow RateRMS|Temperature|Thermocouple,Volume Flow RateRMS|Accelerometer1RMS|Temperature,2
+other/4,Volume Flow RateRMS|Thermocouple|Temperature,Volume Flow RateRMS|Thermocouple|Temperature,3
+other/5,Accelerometer2RMS|Accelerometer1RMS|Thermocouple,Accelerometer1RMS|Accelerometer2RMS|Volume Flow RateRMS,2
+other/6,Accelerometer1RMS|Accelerometer2RMS|Volume Flow RateRMS,Accelerometer1RMS|Accelerometer2RMS|Volume Flow RateRMS,3
+other/7,Accelerometer1RMS|Accelerometer2RMS|Volume Flow RateRMS,Accelerometer1RMS|Accelerometer2RMS|Thermocouple,2
+other/8,Thermocouple|Accelerometer1RMS|Volume Flow RateRMS,Accelerometer1RMS|Thermocouple|Temperature,2
+other/9,Accelerometer1RMS|Accelerometer2RMS|Thermocouple,Accelerometer1RMS|Accelerometer2RMS|Volume Flow RateRMS,2
+valve1/0,Temperature|Thermocouple|Accelerometer1RMS,Temperature|Volume Flow RateRMS|Accelerometer2RMS,1
+valve1/1,Thermocouple|Volume Flow RateRMS|Accelerometer2RMS,Volume Flow RateRMS|Thermocouple|Accelerometer2RMS,3
+valve1/10,Volume Flow RateRMS|Temperature|Accelerometer2RMS,Temperature|Volume Flow RateRMS|Accelerometer2RMS,3
+valve1/11,Volume Flow RateRMS|Accelerometer2RMS|Voltage,Volume Flow RateRMS|Temperature|Accelerometer2RMS,2
+valve1/12,Temperature|Volume Flow RateRMS|Accelerometer2RMS,Volume Flow RateRMS|Accelerometer2RMS|Current,2
+valve1/13,Volume Flow RateRMS|Temperature|Thermocouple,Volume Flow RateRMS|Temperature|Thermocouple,3
+valve1/14,Volume Flow RateRMS|Thermocouple|Temperature,Volume Flow RateRMS|Thermocouple|Accelerometer1RMS,2
+valve1/15,Volume Flow RateRMS|Temperature|Thermocouple,Volume Flow RateRMS|Temperature|Accelerometer1RMS,2
+valve1/2,Temperature|Thermocouple|Volume Flow RateRMS,Volume Flow RateRMS|Thermocouple|Accelerometer2RMS,2
+valve1/3,Volume Flow RateRMS|Accelerometer1RMS|Pressure,Volume Flow RateRMS|Accelerometer2RMS|Thermocouple,1
+valve1/4,Thermocouple|Volume Flow RateRMS|Accelerometer1RMS,Volume Flow RateRMS|Accelerometer2RMS|Temperature,1
+valve1/5,Thermocouple|Volume Flow RateRMS|Temperature,Volume Flow RateRMS|Thermocouple|Temperature,3
+valve1/6,Thermocouple|Volume Flow RateRMS|Pressure,Volume Flow RateRMS|Accelerometer2RMS|Thermocouple,2
+valve1/7,Volume Flow RateRMS|Thermocouple|Accelerometer2RMS,Volume Flow RateRMS|Accelerometer2RMS|Temperature,2
+valve1/8,Volume Flow RateRMS|Temperature|Accelerometer2RMS,Volume Flow RateRMS|Thermocouple|Temperature,2
+valve1/9,Volume Flow RateRMS|Temperature|Thermocouple,Volume Flow RateRMS|Temperature|Thermocouple,3
+valve2/0,Temperature|Thermocouple|Volume Flow RateRMS,Volume Flow RateRMS|Thermocouple|Accelerometer2RMS,2
+valve2/1,Volume Flow RateRMS|Thermocouple|Temperature,Volume Flow RateRMS|Temperature|Thermocouple,3
+valve2/2,Thermocouple|Volume Flow RateRMS|Temperature,Volume Flow RateRMS|Current|Accelerometer1RMS,1
+valve2/3,Volume Flow RateRMS|Temperature|Thermocouple,Volume Flow RateRMS|Temperature|Thermocouple,3
