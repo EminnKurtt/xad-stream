@@ -1,0 +1,41 @@
+task,method,precision,precision_min,precision_max,detection_rate
+shift k=1 m=2,EIF explain (ours),0.4799,0.4771,0.4850,0.2109
+shift k=1 m=2,Local-DIFFI,0.4587,0.4562,0.4615,0.1466
+shift k=1 m=2,z-score,0.4786,0.4759,0.4841,
+shift k=1 m=2,random,0.1293,0.1194,0.1444,
+shift k=1 m=3,EIF explain (ours),0.7460,0.7371,0.7521,0.4343
+shift k=1 m=3,Local-DIFFI,0.6500,0.6459,0.6582,0.1913
+shift k=1 m=3,z-score,0.7393,0.7297,0.7479,
+shift k=1 m=3,random,0.1343,0.1179,0.1538,
+shift k=1 m=5,EIF explain (ours),0.9669,0.9656,0.9676,0.8123
+shift k=1 m=5,Local-DIFFI,0.7734,0.7550,0.7882,0.2388
+shift k=1 m=5,z-score,0.9659,0.9656,0.9662,
+shift k=1 m=5,random,0.1251,0.0982,0.1397,
+shift k=2 m=2,EIF explain (ours),0.6021,0.5993,0.6071,0.3896
+shift k=2 m=2,Local-DIFFI,0.5760,0.5724,0.5828,0.2773
+shift k=2 m=2,z-score,0.5999,0.5972,0.6043,
+shift k=2 m=2,random,0.2236,0.2154,0.2334,
+shift k=2 m=3,EIF explain (ours),0.8088,0.8054,0.8124,0.7074
+shift k=2 m=3,Local-DIFFI,0.7344,0.7240,0.7434,0.4697
+shift k=2 m=3,z-score,0.8059,0.8022,0.8093,
+shift k=2 m=3,random,0.2597,0.2385,0.2994,
+shift k=2 m=5,EIF explain (ours),0.9747,0.9741,0.9757,0.9409
+shift k=2 m=5,Local-DIFFI,0.8297,0.8244,0.8337,0.5904
+shift k=2 m=5,z-score,0.9754,0.9744,0.9765,
+shift k=2 m=5,random,0.2475,0.2303,0.2571,
+shift k=3 m=2,EIF explain (ours),0.6749,0.6738,0.6767,0.5354
+shift k=3 m=2,Local-DIFFI,0.6560,0.6536,0.6584,0.4449
+shift k=3 m=2,z-score,0.6693,0.6669,0.6706,
+shift k=3 m=2,random,0.3725,0.3589,0.3918,
+shift k=3 m=3,EIF explain (ours),0.8426,0.8402,0.8444,0.8393
+shift k=3 m=3,Local-DIFFI,0.7838,0.7777,0.7903,0.7259
+shift k=3 m=3,z-score,0.8404,0.8366,0.8435,
+shift k=3 m=3,random,0.3854,0.3740,0.4030,
+shift k=3 m=5,EIF explain (ours),0.9805,0.9792,0.9825,0.9722
+shift k=3 m=5,Local-DIFFI,0.8607,0.8525,0.8685,0.8750
+shift k=3 m=5,z-score,0.9816,0.9811,0.9826,
+shift k=3 m=5,random,0.3744,0.3637,0.3902,
+swap,EIF explain (ours),0.4613,0.4534,0.4655,0.1371
+swap,Local-DIFFI,0.5290,0.5097,0.5639,0.1112
+swap,z-score,0.4027,0.4018,0.4041,
+swap,random,0.2445,0.2398,0.2470,

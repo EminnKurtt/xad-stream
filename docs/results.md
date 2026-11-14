@@ -83,6 +83,63 @@ Findings:
   `notebooks/isolation_forest.ipynb`. Our Isolation Forest scores 0.604 with a threshold
   calibrated on held-out training rows.
 
+## Explanations against a known ground truth
+
+`python scripts/explanation_benchmark.py` (methods in `src/xad/attribution.py`).
+For each of the 34 experiments and seeds 0–2:
+
+- The scaler, the EIF and the Isolation Forest are fit on rows 0–299, exactly as in the
+  SKAB-protocol benchmark.
+- Anomalies with known responsible sensors are injected into the 100 normal rows that
+  follow.
+
+Injected anomaly types, in standardised units:
+- **shift:** k ∈ {1, 2, 3} random sensors move by ±m standard deviations, m ∈ {2, 3, 5}.
+- **swap:** for the most correlated sensor pair (a, b) in the fitting rows, used only
+  where |r| ≥ 0.6 (14 experiments), rows with |x_a| ≥ 1 get a value of b from a fitting
+  row where a sits at the opposite end. b stays within its normal range; only its
+  relation to a breaks. The truth is {a, b}.
+
+Methods compared:
+- the EIF `explain` heuristic (ours);
+- Local-DIFFI on the 200-tree Isolation Forest, from Algorithm 3 of the DIFFI paper. A
+  test checks it against a direct tree-walk implementation of that algorithm;
+- |z|, the per-sensor deviation from the fitting rows;
+- random ranking.
+
+**Metric.** precision@k: the share of the responsible sensors among each method's top k,
+where k is the number of responsible sensors. It is averaged over all injected rows,
+whether or not the detector flagged them. Experiments are weighted equally, then results
+are averaged over seeds (`explanation_benchmark_summary.csv`; per experiment in
+`explanation_benchmark.csv`). The spread across seeds is at most 0.061.
+
+| injected anomaly | EIF explain (ours) | Local-DIFFI | z-score | random | flagged by EIF / IF |
+|---|---|---|---|---|---|
+| shift k=1, m=2 | 0.480 | 0.459 | 0.479 | 0.129 | 21 % / 15 % |
+| shift k=1, m=3 | 0.746 | 0.650 | 0.739 | 0.134 | 43 % / 19 % |
+| shift k=1, m=5 | 0.967 | 0.773 | 0.966 | 0.125 | 81 % / 24 % |
+| shift k=2, m=3 | 0.809 | 0.734 | 0.806 | 0.260 | 71 % / 47 % |
+| shift k=3, m=3 | 0.843 | 0.784 | 0.840 | 0.385 | 84 % / 73 % |
+| swap (k = 2) | 0.461 | 0.529 | 0.403 | 0.245 | 14 % / 11 % |
+
+Findings:
+
+- **On shifted sensors our explanation matches the z-score to within 0.01 in every
+  setting.** It adds nothing over the much simpler per-sensor deviation. Local-DIFFI is
+  0.02–0.19 lower. Every method is far above chance.
+- **On broken pairs the order reverses:** Local-DIFFI 0.529, ours 0.461, z-score 0.403,
+  chance 0.245. The model-based explanations do capture something about relations between
+  sensors. But both detectors flag only 11–14 % of these rows, because in SKAB's normal
+  operation the strongest sensor pair has a median |r| of about 0.6.
+- **The EIF detects injected shifts much more often than the Isolation Forest**
+  (1 sensor at 5 std: 81 % against 24 %), both with thresholds calibrated the same way.
+- **Local-DIFFI needs many trees.** On synthetic data with 3 shifted features its top-3
+  precision was 0.68–0.75 with 50 trees and 0.94–0.98 with 200 trees (development check,
+  not saved). The benchmark uses 200.
+- **Limits:** the injected anomalies are two simple types placed on real normal rows; real
+  faults may look different. "Responsible sensor" is defined by the injection, which for
+  swaps includes both sensors of the pair.
+
 ## Per-experiment protocol (earlier analysis)
 
 The sections below use the earlier protocol. The normal prefix ends 5 rows before the first

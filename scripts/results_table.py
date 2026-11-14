@@ -60,3 +60,23 @@ print(
     f"{share['raw']:.0f} % of the normal rows; without Thermocouple, "
     f"{share['no_thermo']:.0f} %."
 )
+
+xb = pd.read_csv("docs/explanation_benchmark_summary.csv").set_index(["task", "method"])
+methods = ["EIF explain (ours)", "Local-DIFFI", "z-score", "random"]
+tasks = {
+    "shift k=1 m=3": "1 sensor shifted by 3 std",
+    "shift k=1 m=5": "1 sensor shifted by 5 std",
+    "shift k=3 m=3": "3 sensors shifted by 3 std",
+    "swap": "correlated pair broken (k = 2)",
+}
+print(
+    "\n| injected anomaly | "
+    + " | ".join(methods)
+    + " | flagged by EIF / IF |\n|"
+    + "---|" * (len(methods) + 2)
+)
+for task, label in tasks.items():
+    p = [f"{xb.loc[(task, m), 'precision']:.2f}" for m in methods]
+    eif_det = xb.loc[(task, "EIF explain (ours)"), "detection_rate"]
+    if_det = xb.loc[(task, "Local-DIFFI"), "detection_rate"]
+    print(f"| {label} | " + " | ".join(p) + f" | {eif_det:.0%} / {if_det:.0%} |")

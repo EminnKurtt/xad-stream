@@ -94,6 +94,41 @@ Across all experiments the result is mixed:
   not single out the anomaly windows. For Thermocouple this pointed to the real problem:
   the detector raises false alarms on it after the anomaly.
 
+### Do the explanations find the responsible sensor?
+
+Real anomalies have no sensor-level ground truth. So `scripts/explanation_benchmark.py`
+injects anomalies with known causes into real SKAB normal rows (100 rows per experiment,
+34 experiments, 3 seeds; models fit on the 300 rows before them):
+
+- **Shift:** k sensors are moved by a set number of standard deviations.
+- **Broken pair:** for the most correlated sensor pair (|r| ≥ 0.6, 14 experiments), one
+  sensor takes its value from a normal row where the other sensor sits at the opposite end.
+  Each value is normal on its own; only the relation between them is wrong.
+
+Each cell is precision@k: the share of the truly responsible sensors among an explanation's
+top k, where k is the number of responsible sensors. The score covers every injected row,
+whether or not the detector raised an alarm.
+
+| injected anomaly | EIF explain (ours) | Local-DIFFI | z-score | random | flagged by EIF / IF |
+|---|---|---|---|---|---|
+| 1 sensor shifted by 3 std | 0.75 | 0.65 | 0.74 | 0.13 | 43% / 19% |
+| 1 sensor shifted by 5 std | 0.97 | 0.77 | 0.97 | 0.13 | 81% / 24% |
+| 3 sensors shifted by 3 std | 0.84 | 0.78 | 0.84 | 0.39 | 84% / 73% |
+| correlated pair broken (k = 2) | 0.46 | 0.53 | 0.40 | 0.24 | 14% / 11% |
+
+- **On shifted sensors, our EIF explanation is as accurate as a plain z-score,** but not
+  more. It ranks the sensors almost exactly like the per-sensor deviation from normal.
+  Local-DIFFI on Isolation Forest is less accurate. All three are far above chance.
+- **On broken relations, the model-based explanations do better than the z-score**
+  (Local-DIFFI 0.53, ours 0.46, z-score 0.40). But both detectors flag only 11–14 % of
+  these rows. In SKAB's normal operation the sensors are only moderately correlated, so
+  neither model learns much about their relations.
+- **What this means in practice:** on SKAB, much of what the explanation adds over a
+  per-sensor z-score shows up only for anomalies the detector rarely catches. This
+  matches recent work reporting that anomalies in multivariate benchmarks are mostly
+  visible in single channels (Pinet et al., see References). Full write-up:
+  [`docs/results.md`](docs/results.md).
+
 ## Method
 
 - **Protocol.** SKAB's protocol: per experiment, the first 400 rows are for training and
@@ -117,8 +152,9 @@ Across all experiments the result is mixed:
   (`1 - size(child) / size(node)`), and the result is averaged over trees.
 
   **What it is not:** this is a simplified heuristic *inspired by* ExIFFI. It is not a
-  reimplementation of ExIFFI or DIFFI, and it has not been validated beyond the checks in
-  [`docs/results.md`](docs/results.md).
+  reimplementation of ExIFFI. It is compared with Local-DIFFI (implemented from Algorithm 3
+  of the DIFFI paper and checked against a step-by-step reference implementation in the
+  tests), a z-score and random ranking in the synthetic test above.
 - **Streaming.** A Redpanda and Docker Compose demo replays an experiment row by row. It
   uses the same 300 + 100 warm-up, and it logs alarms with their top sensors. See
   [`docs/streaming.md`](docs/streaming.md).
@@ -131,8 +167,9 @@ Across all experiments the result is mixed:
   linear detrending did not help.
 - **Per-experiment fitting.** Every experiment gets its own model, fit on its first 300
   rows (5 minutes at 1 Hz). This is not one model deployed across runs.
-- **Simplified explanations.** See above. The check against "visible change" uses a simple
-  mean difference, which misses changes in variance or in correlations.
+- **Simplified explanations.** On shifted sensors they add nothing over a z-score. The
+  synthetic test covers two kinds of anomaly only (mean shifts and broken pairs), and the
+  injected rows are real normal rows, not real faults.
 - **Streaming is a demo only.** It replays recorded data with a fixed model and has no
   separate evaluation.
 
@@ -144,6 +181,7 @@ make data                             # clones SKAB into data/raw/SKAB (not comm
 make test && make lint
 python scripts/skab_benchmark.py      # docs/skab_*.csv, SKAB protocol (about 10 minutes)
 python scripts/false_alarm_analysis.py raw no_thermo thermo_rate   # where false alarms fall
+python scripts/explanation_benchmark.py   # docs/explanation_benchmark*.csv (about 5 minutes)
 python scripts/compare_models.py      # docs/compare_if_vs_eif*.csv, per-experiment protocol
 python scripts/run_baseline.py        # docs/baseline_*.csv
 python scripts/explain_skab.py        # docs/explanation_* figures and CSVs
@@ -182,6 +220,8 @@ The leaderboard rows above are quoted from its README. Dataset notes are in
 - M. Carletti, M. Terzi, G. A. Susto. *Interpretable Anomaly Detection with DIFFI:
   Depth-based Isolation Forest Feature Importance.*
   [arXiv:2007.11117](https://arxiv.org/abs/2007.11117)
+- M. Pinet, J. Cumin, S. Berlemont, D. Vaufreydaz. *Anomalies in Multivariate Time Series
+  Benchmarks Are Mostly Univariate.* [arXiv:2606.02670](https://arxiv.org/abs/2606.02670)
 - I. D. Katser, V. O. Kozitsin. *Skoltech Anomaly Benchmark (SKAB)*, 2020.
   <https://github.com/waico/SKAB>
 
