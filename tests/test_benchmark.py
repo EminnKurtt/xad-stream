@@ -6,7 +6,9 @@ from xad.benchmark import (
     FIT_END,
     N_TRAIN,
     RATE_LAG,
+    alarm_events,
     evaluate,
+    event_metrics,
     false_alarm_positions,
     features,
     pooled_metrics,
@@ -61,6 +63,31 @@ def test_false_alarm_positions():
     )  # row 0 is training
     assert out["normal_after"] == 4 and out["false_alarms_after"] == 2
     assert out["normal_between"] == 0
+
+
+def test_alarm_events_merge_short_gaps():
+    pred = np.zeros(40, dtype=bool)
+    pred[[2, 3, 8, 30]] = True  # gap of 4 quiet rows merges, gap of 21 does not
+    assert alarm_events(pred, merge_gap=10) == [(2, 9), (30, 31)]
+    assert alarm_events(pred, merge_gap=3) == [(2, 4), (8, 9), (30, 31)]
+    assert alarm_events(np.zeros(5, dtype=bool)) == []
+
+
+def test_event_metrics():
+    n = N_TRAIN + 100
+    y = np.zeros(n, dtype=int)
+    y[N_TRAIN + 40 : N_TRAIN + 60] = 1  # one anomaly window
+    pred = np.zeros(n, dtype=bool)
+    pred[0] = True  # training row: ignored
+    pred[N_TRAIN + 5] = True  # false event before
+    pred[N_TRAIN + 38 : N_TRAIN + 50] = True  # starts early, overlaps the window
+    pred[[N_TRAIN + 80, N_TRAIN + 95]] = True  # two false events after
+    m = event_metrics(y, pred, merge_gap=10)
+    assert (m["windows"], m["detected"], m["delays"]) == (1, 1, [0])
+    assert (m["false_events_before"], m["false_events_after"]) == (1, 2)
+    assert (m["normal_s_before"], m["normal_s_after"]) == (40, 40)
+    missed = event_metrics(y, np.zeros(n, dtype=bool))
+    assert missed["detected"] == 0 and missed["delays"] == []
 
 
 def test_predict_is_causal_and_uses_calibration_rows():

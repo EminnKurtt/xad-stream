@@ -71,6 +71,34 @@ What this shows:
   (F1 0.29) and ours (F1 0.60) use the same algorithm. Ours sets its threshold on held-out
   normal rows; theirs uses a fixed contamination value.
 
+### What an operator would see
+
+Row-level metrics hide what an alarm system feels like in use. `scripts/event_metrics.py`
+counts *events* instead. Alarms at most 10 s apart form one event, and an event that
+touches no anomalous row is a false alarm. The data cover 34 anomaly windows and 3.06 h of
+normal test time. Our rows are means over 3 seeds; default post-processing.
+
+| alarms from | anomalies caught | median delay, s | false-alarm events per hour (before / after the anomaly) |
+|---|---|---|---|
+| EIF, raw sensors | 100 % | 1.0 | 57.6 / 17.1 |
+| EIF, raw, alarms shuffled in time | 100 % | 0.0 | 0.8 / 2.0 |
+| EIF, without Thermocouple | 100 % | 1.8 | 61.0 / 34.7 |
+| IF, raw sensors | 100 % | 2.8 | 80.5 / 38.8 |
+| alarm on every row | 100 % | 0.0 | 0.0 / 0.0 |
+
+- **At this alarm rate, event metrics cannot tell a detector from chance.** Every
+  configuration "catches" all 34 anomalies, with a median delay under 3 s. But so does the
+  same set of alarms shuffled to random times. The shuffled alarms even produce far fewer false events: dense
+  random alarms merge into a few long blocks that touch the anomaly. Event counts and
+  row-level FAR must be read together.
+- **The real detectors raise a false alarm about every one to two minutes** (38–61
+  events per hour of normal operation). That is not usable on a shop floor without
+  further work.
+- **Fewer false rows does not mean fewer false events.** Dropping Thermocouple lowers
+  the share of falsely flagged rows but breaks long post-anomaly alarm blocks into more,
+  shorter events (34.7 instead of 17.1 per hour after the anomaly). The Isolation Forest
+  flags the fewest normal rows and produces the most events.
+
 Full write-up, including per-experiment results and the explanation analysis:
 [`docs/results.md`](docs/results.md).
 
@@ -159,6 +187,26 @@ whether or not the detector raised an alarm.
   uses the same 300 + 100 warm-up, and it logs alarms with their top sensors. See
   [`docs/streaming.md`](docs/streaming.md).
 
+## Industrial context
+
+The pipeline studied here, an isolation-based detector plus a per-sensor explanation shown
+to an operator, is the pattern used in practice. In the EU project
+[AIMS5.0](https://cordis.europa.eu/project/id/101112089) (Chips JU, 2023–2026, 53
+partners), the semiconductor use case UC15 runs an Isolation Forest on multivariate process
+sensor data, with DIFFI and AcME-AD as explanation layers. The project's overview of its
+machine-learning work (Varga and Olaszi, 2026) lists open questions. This repository looks
+at three of them on public data:
+
+- **Are the explanations right?** The overview notes that explanations are usually judged
+  as an interface feature, not by whether they lead to the right diagnosis. Here they are
+  tested against a known ground truth, next to Local-DIFFI and a z-score.
+- **Evaluation beyond model accuracy.** Results are given as row-level metrics (F1, FAR,
+  MAR) and as operator-level events (delay, false alarms per hour).
+- **Adaptation to changed conditions.** Most false alarms here come from a plant that
+  settles at a new state after an anomaly; that is the drift problem the overview raises.
+
+This repository is independent of AIMS5.0 and uses no data from it.
+
 ## Limitations
 
 - **High false-alarm rate.** The default EIF flags about half of the normal test rows,
@@ -182,6 +230,7 @@ make test && make lint
 python scripts/skab_benchmark.py      # docs/skab_*.csv, SKAB protocol (about 10 minutes)
 python scripts/false_alarm_analysis.py raw no_thermo thermo_rate   # where false alarms fall
 python scripts/explanation_benchmark.py   # docs/explanation_benchmark*.csv (about 5 minutes)
+python scripts/event_metrics.py           # docs/event_metrics*.csv (about 4 minutes)
 python scripts/compare_models.py      # docs/compare_if_vs_eif*.csv, per-experiment protocol
 python scripts/run_baseline.py        # docs/baseline_*.csv
 python scripts/explain_skab.py        # docs/explanation_* figures and CSVs
@@ -206,7 +255,8 @@ The leaderboard rows above are quoted from its README. Dataset notes are in
   time, refit on recent rows, so that a new steady state stops raising alarms. (Training on
   SKAB's anomaly-free recording would not help: its Thermocouple range does not cover the
   experiments.)
-- Group consecutive alarms into events.
+- **Alarm logic for operators.** Persistence rules (alarm only after n of the last m rows)
+  and an operating point chosen for false-alarm events per hour, not for F1.
 - A small dashboard for scores, alarms and sensor importance.
 
 ## References
@@ -220,6 +270,9 @@ The leaderboard rows above are quoted from its README. Dataset notes are in
 - M. Carletti, M. Terzi, G. A. Susto. *Interpretable Anomaly Detection with DIFFI:
   Depth-based Isolation Forest Feature Importance.*
   [arXiv:2007.11117](https://arxiv.org/abs/2007.11117)
+- P. Varga, P. Olaszi. *Machine Learning in Industry 5.0.* Infocommunication Journal,
+  special issue, 2026, doi:10.36244/ICJ.2026.5.1.
+  [PDF](https://real.mtak.hu/248927/1/AIMS_SpecIss_ICJ_2026_1_1.pdf)
 - M. Pinet, J. Cumin, S. Berlemont, D. Vaufreydaz. *Anomalies in Multivariate Time Series
   Benchmarks Are Mostly Univariate.* [arXiv:2606.02670](https://arxiv.org/abs/2606.02670)
 - I. D. Katser, V. O. Kozitsin. *Skoltech Anomaly Benchmark (SKAB)*, 2020.

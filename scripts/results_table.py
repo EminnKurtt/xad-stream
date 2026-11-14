@@ -80,3 +80,14 @@ for task, label in tasks.items():
     eif_det = xb.loc[(task, "EIF explain (ours)"), "detection_rate"]
     if_det = xb.loc[(task, "Local-DIFFI"), "detection_rate"]
     print(f"| {label} | " + " | ".join(p) + f" | {eif_det:.0%} / {if_det:.0%} |")
+
+ev = pd.read_csv("docs/event_metrics_summary.csv", index_col="config")
+print(
+    "\n| alarms from | anomalies caught | median delay, s "
+    "| false-alarm events per hour (before / after the anomaly) |\n|---|---|---|---|"
+)
+for config, r in ev.iterrows():
+    print(
+        f"| {config} | {r['detected_pct']:.0f} % | {r['median_delay_s']:.1f} "
+        f"| {r['false_events_per_h_before']:.1f} / {r['false_events_per_h_after']:.1f} |"
+    )

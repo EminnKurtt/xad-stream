@@ -83,6 +83,45 @@ Findings:
   `notebooks/isolation_forest.ipynb`. Our Isolation Forest scores 0.604 with a threshold
   calibrated on held-out training rows.
 
+## Operator-level events
+
+`python scripts/event_metrics.py` uses the SKAB protocol and the default post-processing
+(no smoothing, q 0.95), with seeds 0–2. Alarms at most 10 quiet seconds apart form one
+event (`xad.benchmark.alarm_events`). For each labelled window:
+
+- the window counts as detected if any alarm falls inside it;
+- the delay runs from the window start to the first alarm inside it.
+
+An event that touches no anomalous row is a false-alarm event. False-alarm events are
+counted per hour of normal test time: 1.60 h before the anomalies and 1.46 h after them,
+over 34 windows (`event_metrics_summary.csv`, per experiment in `event_metrics.csv`).
+
+| alarms from | detected | median delay, s | false events / h before | false events / h after | false events / h overall |
+|---|---|---|---|---|---|
+| EIF, raw sensors | 100 % | 1.0 | 57.6 | 17.1 | 38.3 |
+| EIF, raw, alarms shuffled in time | 100 % | 0.0 | 0.8 | 2.0 | 1.4 |
+| EIF, without Thermocouple | 100 % | 1.8 | 61.0 | 34.7 | 48.4 |
+| IF, raw sensors | 100 % | 2.8 | 80.5 | 38.8 | 60.6 |
+| alarm on every row | 100 % | 0.0 | 0.0 | 0.0 | 0.0 |
+
+"Alarms shuffled in time" keeps the EIF's test alarms per experiment and seed but places
+them at random test rows.
+
+- **Detection and delay carry no information at this alarm rate.** About half of the
+  normal rows raise an alarm, so randomly timed alarms also reach every window at once.
+- **Event counts reward dense alarms.** Shuffled alarms, and an alarm on every row, merge
+  into long blocks that touch the anomaly and so count as few or no false events. Event
+  metrics have to be read next to row-level FAR, which these references fail badly
+  (100 % for the alarm on every row).
+- **The real detectors raise 38–61 false-alarm events per hour.** Before the anomaly,
+  alarms are sparser (26 % of normal rows for the default EIF, see
+  `false_alarm_positions.csv`) and split into many short events. After it, they are denser
+  (74 %) and merge into fewer, longer ones.
+- **Row FAR and event counts can disagree.** Without Thermocouple, the row-level FAR is
+  lower (31.5 % against 48.1 % on all 34 experiments), but there are twice as many false
+  events after the anomaly. The Isolation Forest has the lowest row FAR (23.4 %) and the
+  most events.
+
 ## Explanations against a known ground truth
 
 `python scripts/explanation_benchmark.py` (methods in `src/xad/attribution.py`).

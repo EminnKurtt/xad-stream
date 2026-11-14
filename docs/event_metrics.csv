@@ -1,0 +1,443 @@
+config,seed,experiment,windows,detected,delays,false_events_before,false_events_after,normal_s_before,normal_s_after
+"EIF, raw sensors",0,other/1,1,1,0,0,0,157,0
+"EIF, raw, alarms shuffled in time",0,other/1,1,1,1,0,0,157,0
+"EIF, raw sensors",0,other/10,1,1,0,5,0,170,171
+"EIF, raw, alarms shuffled in time",0,other/10,1,1,2,0,0,170,171
+"EIF, raw sensors",0,other/11,1,1,1,3,0,170,169
+"EIF, raw, alarms shuffled in time",0,other/11,1,1,1,0,0,170,169
+"EIF, raw sensors",0,other/12,1,1,14,4,0,168,171
+"EIF, raw, alarms shuffled in time",0,other/12,1,1,1,0,0,168,171
+"EIF, raw sensors",0,other/13,1,1,4,5,2,95,163
+"EIF, raw, alarms shuffled in time",0,other/13,1,1,1,0,2,95,163
+"EIF, raw sensors",0,other/14,1,1,4,4,0,171,32
+"EIF, raw, alarms shuffled in time",0,other/14,1,1,0,0,0,171,32
+"EIF, raw sensors",0,other/2,1,1,43,0,2,0,292
+"EIF, raw, alarms shuffled in time",0,other/2,1,1,4,0,2,0,292
+"EIF, raw sensors",0,other/3,1,1,9,3,0,168,171
+"EIF, raw, alarms shuffled in time",0,other/3,1,1,0,0,0,168,171
+"EIF, raw sensors",0,other/4,1,1,3,7,0,396,0
+"EIF, raw, alarms shuffled in time",0,other/4,1,1,0,0,0,396,0
+"EIF, raw sensors",0,other/5,1,1,0,0,0,172,173
+"EIF, raw, alarms shuffled in time",0,other/5,1,1,0,0,0,172,173
+"EIF, raw sensors",0,other/6,1,1,0,4,0,173,172
+"EIF, raw, alarms shuffled in time",0,other/6,1,1,0,0,0,173,172
+"EIF, raw sensors",0,other/7,1,1,1,2,6,172,171
+"EIF, raw, alarms shuffled in time",0,other/7,1,1,1,0,0,172,171
+"EIF, raw sensors",0,other/8,1,1,1,5,0,172,172
+"EIF, raw, alarms shuffled in time",0,other/8,1,1,0,0,0,172,172
+"EIF, raw sensors",0,other/9,1,1,0,0,0,172,171
+"EIF, raw, alarms shuffled in time",0,other/9,1,1,0,0,0,172,171
+"EIF, raw sensors",0,valve1/0,1,1,1,4,0,173,173
+"EIF, raw, alarms shuffled in time",0,valve1/0,1,1,0,0,0,173,173
+"EIF, raw sensors",0,valve1/1,1,1,1,2,0,172,171
+"EIF, raw, alarms shuffled in time",0,valve1/1,1,1,0,0,0,172,171
+"EIF, raw sensors",0,valve1/10,1,1,3,3,6,173,172
+"EIF, raw, alarms shuffled in time",0,valve1/10,1,1,1,0,0,173,172
+"EIF, raw sensors",0,valve1/11,1,1,53,3,0,172,170
+"EIF, raw, alarms shuffled in time",0,valve1/11,1,1,0,1,0,172,170
+"EIF, raw sensors",0,valve1/12,1,1,0,0,0,170,171
+"EIF, raw, alarms shuffled in time",0,valve1/12,1,1,0,0,0,170,171
+"EIF, raw sensors",0,valve1/13,1,1,1,1,1,170,171
+"EIF, raw, alarms shuffled in time",0,valve1/13,1,1,0,0,0,170,171
+"EIF, raw sensors",0,valve1/14,1,1,13,5,2,169,171
+"EIF, raw, alarms shuffled in time",0,valve1/14,1,1,2,0,0,169,171
+"EIF, raw sensors",0,valve1/15,1,1,0,1,2,174,172
+"EIF, raw, alarms shuffled in time",0,valve1/15,1,1,2,0,0,174,172
+"EIF, raw sensors",0,valve1/2,1,1,0,0,0,166,172
+"EIF, raw, alarms shuffled in time",0,valve1/2,1,1,0,0,0,166,172
+"EIF, raw sensors",0,valve1/3,1,1,0,3,4,173,171
+"EIF, raw, alarms shuffled in time",0,valve1/3,1,1,0,0,0,173,171
+"EIF, raw sensors",0,valve1/4,1,1,5,5,0,173,173
+"EIF, raw, alarms shuffled in time",0,valve1/4,1,1,0,0,0,173,173
+"EIF, raw sensors",0,valve1/5,1,1,3,4,0,177,174
+"EIF, raw, alarms shuffled in time",0,valve1/5,1,1,0,0,0,177,174
+"EIF, raw sensors",0,valve1/6,1,1,0,2,0,176,173
+"EIF, raw, alarms shuffled in time",0,valve1/6,1,1,0,0,0,176,173
+"EIF, raw sensors",0,valve1/7,1,1,7,5,2,178,111
+"EIF, raw, alarms shuffled in time",0,valve1/7,1,1,1,0,0,178,111
+"EIF, raw sensors",0,valve1/8,1,1,3,6,0,172,172
+"EIF, raw, alarms shuffled in time",0,valve1/8,1,1,1,0,0,172,172
+"EIF, raw sensors",0,valve1/9,1,1,0,0,0,174,172
+"EIF, raw, alarms shuffled in time",0,valve1/9,1,1,1,0,0,174,172
+"EIF, raw sensors",0,valve2/0,1,1,0,3,0,162,169
+"EIF, raw, alarms shuffled in time",0,valve2/0,1,1,0,0,0,162,169
+"EIF, raw sensors",0,valve2/1,1,1,33,3,0,160,170
+"EIF, raw, alarms shuffled in time",0,valve2/1,1,1,0,0,0,160,170
+"EIF, raw sensors",0,valve2/2,1,1,0,0,0,165,169
+"EIF, raw, alarms shuffled in time",0,valve2/2,1,1,0,0,0,165,169
+"EIF, raw sensors",0,valve2/3,1,1,9,4,0,164,36
+"EIF, raw, alarms shuffled in time",0,valve2/3,1,1,1,0,0,164,36
+"EIF, raw sensors",1,other/1,1,1,0,0,0,157,0
+"EIF, raw, alarms shuffled in time",1,other/1,1,1,1,0,0,157,0
+"EIF, raw sensors",1,other/10,1,1,0,4,0,170,171
+"EIF, raw, alarms shuffled in time",1,other/10,1,1,0,0,0,170,171
+"EIF, raw sensors",1,other/11,1,1,0,1,0,170,169
+"EIF, raw, alarms shuffled in time",1,other/11,1,1,0,0,0,170,169
+"EIF, raw sensors",1,other/12,1,1,0,4,0,168,171
+"EIF, raw, alarms shuffled in time",1,other/12,1,1,0,0,0,168,171
+"EIF, raw sensors",1,other/13,1,1,4,3,2,95,163
+"EIF, raw, alarms shuffled in time",1,other/13,1,1,0,1,0,95,163
+"EIF, raw sensors",1,other/14,1,1,5,4,0,171,32
+"EIF, raw, alarms shuffled in time",1,other/14,1,1,0,0,0,171,32
+"EIF, raw sensors",1,other/2,1,1,38,0,2,0,292
+"EIF, raw, alarms shuffled in time",1,other/2,1,1,4,0,2,0,292
+"EIF, raw sensors",1,other/3,1,1,9,2,0,168,171
+"EIF, raw, alarms shuffled in time",1,other/3,1,1,1,0,0,168,171
+"EIF, raw sensors",1,other/4,1,1,3,9,0,396,0
+"EIF, raw, alarms shuffled in time",1,other/4,1,1,0,0,0,396,0
+"EIF, raw sensors",1,other/5,1,1,0,0,0,172,173
+"EIF, raw, alarms shuffled in time",1,other/5,1,1,1,0,0,172,173
+"EIF, raw sensors",1,other/6,1,1,0,4,0,173,172
+"EIF, raw, alarms shuffled in time",1,other/6,1,1,0,0,0,173,172
+"EIF, raw sensors",1,other/7,1,1,1,2,4,172,171
+"EIF, raw, alarms shuffled in time",1,other/7,1,1,0,0,0,172,171
+"EIF, raw sensors",1,other/8,1,1,1,3,0,172,172
+"EIF, raw, alarms shuffled in time",1,other/8,1,1,0,0,0,172,172
+"EIF, raw sensors",1,other/9,1,1,0,1,0,172,171
+"EIF, raw, alarms shuffled in time",1,other/9,1,1,0,0,0,172,171
+"EIF, raw sensors",1,valve1/0,1,1,1,3,0,173,173
+"EIF, raw, alarms shuffled in time",1,valve1/0,1,1,0,0,0,173,173
+"EIF, raw sensors",1,valve1/1,1,1,0,1,0,172,171
+"EIF, raw, alarms shuffled in time",1,valve1/1,1,1,0,0,0,172,171
+"EIF, raw sensors",1,valve1/10,1,1,3,3,7,173,172
+"EIF, raw, alarms shuffled in time",1,valve1/10,1,1,1,0,0,173,172
+"EIF, raw sensors",1,valve1/11,1,1,53,2,0,172,170
+"EIF, raw, alarms shuffled in time",1,valve1/11,1,1,0,0,0,172,170
+"EIF, raw sensors",1,valve1/12,1,1,0,0,0,170,171
+"EIF, raw, alarms shuffled in time",1,valve1/12,1,1,0,0,0,170,171
+"EIF, raw sensors",1,valve1/13,1,1,0,1,1,170,171
+"EIF, raw, alarms shuffled in time",1,valve1/13,1,1,1,0,0,170,171
+"EIF, raw sensors",1,valve1/14,1,1,13,6,1,169,171
+"EIF, raw, alarms shuffled in time",1,valve1/14,1,1,0,0,0,169,171
+"EIF, raw sensors",1,valve1/15,1,1,0,1,0,174,172
+"EIF, raw, alarms shuffled in time",1,valve1/15,1,1,1,0,0,174,172
+"EIF, raw sensors",1,valve1/2,1,1,1,0,0,166,172
+"EIF, raw, alarms shuffled in time",1,valve1/2,1,1,0,0,0,166,172
+"EIF, raw sensors",1,valve1/3,1,1,0,2,1,173,171
+"EIF, raw, alarms shuffled in time",1,valve1/3,1,1,1,0,0,173,171
+"EIF, raw sensors",1,valve1/4,1,1,5,3,0,173,173
+"EIF, raw, alarms shuffled in time",1,valve1/4,1,1,0,0,0,173,173
+"EIF, raw sensors",1,valve1/5,1,1,0,4,0,177,174
+"EIF, raw, alarms shuffled in time",1,valve1/5,1,1,0,0,0,177,174
+"EIF, raw sensors",1,valve1/6,1,1,5,2,0,176,173
+"EIF, raw, alarms shuffled in time",1,valve1/6,1,1,0,0,0,176,173
+"EIF, raw sensors",1,valve1/7,1,1,21,6,1,178,111
+"EIF, raw, alarms shuffled in time",1,valve1/7,1,1,1,0,0,178,111
+"EIF, raw sensors",1,valve1/8,1,1,3,4,0,172,172
+"EIF, raw, alarms shuffled in time",1,valve1/8,1,1,0,0,0,172,172
+"EIF, raw sensors",1,valve1/9,1,1,0,1,0,174,172
+"EIF, raw, alarms shuffled in time",1,valve1/9,1,1,0,0,0,174,172
+"EIF, raw sensors",1,valve2/0,1,1,0,3,0,162,169
+"EIF, raw, alarms shuffled in time",1,valve2/0,1,1,0,0,0,162,169
+"EIF, raw sensors",1,valve2/1,1,1,8,2,0,160,170
+"EIF, raw, alarms shuffled in time",1,valve2/1,1,1,0,0,0,160,170
+"EIF, raw sensors",1,valve2/2,1,1,0,0,0,165,169
+"EIF, raw, alarms shuffled in time",1,valve2/2,1,1,0,0,0,165,169
+"EIF, raw sensors",1,valve2/3,1,1,9,4,0,164,36
+"EIF, raw, alarms shuffled in time",1,valve2/3,1,1,0,0,0,164,36
+"EIF, raw sensors",2,other/1,1,1,0,0,0,157,0
+"EIF, raw, alarms shuffled in time",2,other/1,1,1,0,0,0,157,0
+"EIF, raw sensors",2,other/10,1,1,0,5,0,170,171
+"EIF, raw, alarms shuffled in time",2,other/10,1,1,2,0,0,170,171
+"EIF, raw sensors",2,other/11,1,1,1,1,0,170,169
+"EIF, raw, alarms shuffled in time",2,other/11,1,1,0,0,0,170,169
+"EIF, raw sensors",2,other/12,1,1,4,6,0,168,171
+"EIF, raw, alarms shuffled in time",2,other/12,1,1,1,0,0,168,171
+"EIF, raw sensors",2,other/13,1,1,4,2,3,95,163
+"EIF, raw, alarms shuffled in time",2,other/13,1,1,6,2,3,95,163
+"EIF, raw sensors",2,other/14,1,1,5,4,0,171,32
+"EIF, raw, alarms shuffled in time",2,other/14,1,1,0,0,0,171,32
+"EIF, raw sensors",2,other/2,1,1,43,0,4,0,292
+"EIF, raw, alarms shuffled in time",2,other/2,1,1,5,0,0,0,292
+"EIF, raw sensors",2,other/3,1,1,0,6,0,168,171
+"EIF, raw, alarms shuffled in time",2,other/3,1,1,0,0,0,168,171
+"EIF, raw sensors",2,other/4,1,1,3,8,0,396,0
+"EIF, raw, alarms shuffled in time",2,other/4,1,1,2,0,0,396,0
+"EIF, raw sensors",2,other/5,1,1,0,0,0,172,173
+"EIF, raw, alarms shuffled in time",2,other/5,1,1,0,0,0,172,173
+"EIF, raw sensors",2,other/6,1,1,0,3,0,173,172
+"EIF, raw, alarms shuffled in time",2,other/6,1,1,0,0,0,173,172
+"EIF, raw sensors",2,other/7,1,1,1,2,5,172,171
+"EIF, raw, alarms shuffled in time",2,other/7,1,1,2,0,0,172,171
+"EIF, raw sensors",2,other/8,1,1,1,5,0,172,172
+"EIF, raw, alarms shuffled in time",2,other/8,1,1,0,0,0,172,172
+"EIF, raw sensors",2,other/9,1,1,0,0,0,172,171
+"EIF, raw, alarms shuffled in time",2,other/9,1,1,0,0,0,172,171
+"EIF, raw sensors",2,valve1/0,1,1,1,4,0,173,173
+"EIF, raw, alarms shuffled in time",2,valve1/0,1,1,2,0,0,173,173
+"EIF, raw sensors",2,valve1/1,1,1,0,4,0,172,171
+"EIF, raw, alarms shuffled in time",2,valve1/1,1,1,0,0,0,172,171
+"EIF, raw sensors",2,valve1/10,1,1,3,1,5,173,172
+"EIF, raw, alarms shuffled in time",2,valve1/10,1,1,1,0,0,173,172
+"EIF, raw sensors",2,valve1/11,1,1,53,3,1,172,170
+"EIF, raw, alarms shuffled in time",2,valve1/11,1,1,0,0,0,172,170
+"EIF, raw sensors",2,valve1/12,1,1,0,0,0,170,171
+"EIF, raw, alarms shuffled in time",2,valve1/12,1,1,0,0,0,170,171
+"EIF, raw sensors",2,valve1/13,1,1,0,1,2,170,171
+"EIF, raw, alarms shuffled in time",2,valve1/13,1,1,0,0,0,170,171
+"EIF, raw sensors",2,valve1/14,1,1,13,5,1,169,171
+"EIF, raw, alarms shuffled in time",2,valve1/14,1,1,1,0,0,169,171
+"EIF, raw sensors",2,valve1/15,1,1,0,2,4,174,172
+"EIF, raw, alarms shuffled in time",2,valve1/15,1,1,0,0,0,174,172
+"EIF, raw sensors",2,valve1/2,1,1,0,0,0,166,172
+"EIF, raw, alarms shuffled in time",2,valve1/2,1,1,0,0,0,166,172
+"EIF, raw sensors",2,valve1/3,1,1,1,4,3,173,171
+"EIF, raw, alarms shuffled in time",2,valve1/3,1,1,0,0,0,173,171
+"EIF, raw sensors",2,valve1/4,1,1,5,4,0,173,173
+"EIF, raw, alarms shuffled in time",2,valve1/4,1,1,0,0,0,173,173
+"EIF, raw sensors",2,valve1/5,1,1,35,5,0,177,174
+"EIF, raw, alarms shuffled in time",2,valve1/5,1,1,0,0,0,177,174
+"EIF, raw sensors",2,valve1/6,1,1,0,2,0,176,173
+"EIF, raw, alarms shuffled in time",2,valve1/6,1,1,3,0,0,176,173
+"EIF, raw sensors",2,valve1/7,1,1,7,4,1,178,111
+"EIF, raw, alarms shuffled in time",2,valve1/7,1,1,1,0,0,178,111
+"EIF, raw sensors",2,valve1/8,1,1,3,5,0,172,172
+"EIF, raw, alarms shuffled in time",2,valve1/8,1,1,0,0,0,172,172
+"EIF, raw sensors",2,valve1/9,1,1,0,1,0,174,172
+"EIF, raw, alarms shuffled in time",2,valve1/9,1,1,0,0,0,174,172
+"EIF, raw sensors",2,valve2/0,1,1,0,3,0,162,169
+"EIF, raw, alarms shuffled in time",2,valve2/0,1,1,0,0,0,162,169
+"EIF, raw sensors",2,valve2/1,1,1,8,3,0,160,170
+"EIF, raw, alarms shuffled in time",2,valve2/1,1,1,0,0,0,160,170
+"EIF, raw sensors",2,valve2/2,1,1,0,0,0,165,169
+"EIF, raw, alarms shuffled in time",2,valve2/2,1,1,0,0,0,165,169
+"EIF, raw sensors",2,valve2/3,1,1,9,3,0,164,36
+"EIF, raw, alarms shuffled in time",2,valve2/3,1,1,1,0,0,164,36
+"EIF, without Thermocouple",0,other/1,1,1,0,2,0,157,0
+"EIF, without Thermocouple",0,other/10,1,1,2,5,0,170,171
+"EIF, without Thermocouple",0,other/11,1,1,2,4,1,170,169
+"EIF, without Thermocouple",0,other/12,1,1,4,6,0,168,171
+"EIF, without Thermocouple",0,other/13,1,1,16,4,4,95,163
+"EIF, without Thermocouple",0,other/14,1,1,4,4,0,171,32
+"EIF, without Thermocouple",0,other/2,1,1,59,0,4,0,292
+"EIF, without Thermocouple",0,other/3,1,1,8,5,0,168,171
+"EIF, without Thermocouple",0,other/4,1,1,3,7,0,396,0
+"EIF, without Thermocouple",0,other/5,1,1,0,0,0,172,173
+"EIF, without Thermocouple",0,other/6,1,1,0,2,0,173,172
+"EIF, without Thermocouple",0,other/7,1,1,1,2,4,172,171
+"EIF, without Thermocouple",0,other/8,1,1,1,4,0,172,172
+"EIF, without Thermocouple",0,other/9,1,1,2,1,0,172,171
+"EIF, without Thermocouple",0,valve1/0,1,1,2,5,0,173,173
+"EIF, without Thermocouple",0,valve1/1,1,1,1,2,0,172,171
+"EIF, without Thermocouple",0,valve1/10,1,1,2,4,6,173,172
+"EIF, without Thermocouple",0,valve1/11,1,1,53,1,0,172,170
+"EIF, without Thermocouple",0,valve1/12,1,1,0,0,1,170,171
+"EIF, without Thermocouple",0,valve1/13,1,1,3,2,1,170,171
+"EIF, without Thermocouple",0,valve1/14,1,1,13,4,7,169,171
+"EIF, without Thermocouple",0,valve1/15,1,1,0,1,0,174,172
+"EIF, without Thermocouple",0,valve1/2,1,1,0,0,3,166,172
+"EIF, without Thermocouple",0,valve1/3,1,1,1,4,4,173,171
+"EIF, without Thermocouple",0,valve1/4,1,1,5,2,1,173,173
+"EIF, without Thermocouple",0,valve1/5,1,1,19,4,6,177,174
+"EIF, without Thermocouple",0,valve1/6,1,1,60,0,0,176,173
+"EIF, without Thermocouple",0,valve1/7,1,1,7,4,3,178,111
+"EIF, without Thermocouple",0,valve1/8,1,1,3,5,0,172,172
+"EIF, without Thermocouple",0,valve1/9,1,1,0,0,1,174,172
+"EIF, without Thermocouple",0,valve2/0,1,1,0,4,0,162,169
+"EIF, without Thermocouple",0,valve2/1,1,1,24,3,2,160,170
+"EIF, without Thermocouple",0,valve2/2,1,1,0,0,6,165,169
+"EIF, without Thermocouple",0,valve2/3,1,1,9,2,0,164,36
+"EIF, without Thermocouple",1,other/1,1,1,0,0,0,157,0
+"EIF, without Thermocouple",1,other/10,1,1,2,7,0,170,171
+"EIF, without Thermocouple",1,other/11,1,1,2,5,1,170,169
+"EIF, without Thermocouple",1,other/12,1,1,4,6,0,168,171
+"EIF, without Thermocouple",1,other/13,1,1,5,4,3,95,163
+"EIF, without Thermocouple",1,other/14,1,1,4,4,0,171,32
+"EIF, without Thermocouple",1,other/2,1,1,43,0,3,0,292
+"EIF, without Thermocouple",1,other/3,1,1,0,3,0,168,171
+"EIF, without Thermocouple",1,other/4,1,1,3,6,0,396,0
+"EIF, without Thermocouple",1,other/5,1,1,0,0,0,172,173
+"EIF, without Thermocouple",1,other/6,1,1,0,3,0,173,172
+"EIF, without Thermocouple",1,other/7,1,1,1,2,4,172,171
+"EIF, without Thermocouple",1,other/8,1,1,1,5,0,172,172
+"EIF, without Thermocouple",1,other/9,1,1,0,1,0,172,171
+"EIF, without Thermocouple",1,valve1/0,1,1,1,7,0,173,173
+"EIF, without Thermocouple",1,valve1/1,1,1,1,2,1,172,171
+"EIF, without Thermocouple",1,valve1/10,1,1,2,5,6,173,172
+"EIF, without Thermocouple",1,valve1/11,1,1,53,3,0,172,170
+"EIF, without Thermocouple",1,valve1/12,1,1,0,0,0,170,171
+"EIF, without Thermocouple",1,valve1/13,1,1,0,2,4,170,171
+"EIF, without Thermocouple",1,valve1/14,1,1,13,4,6,169,171
+"EIF, without Thermocouple",1,valve1/15,1,1,0,3,0,174,172
+"EIF, without Thermocouple",1,valve1/2,1,1,0,0,1,166,172
+"EIF, without Thermocouple",1,valve1/3,1,1,0,5,4,173,171
+"EIF, without Thermocouple",1,valve1/4,1,1,5,2,2,173,173
+"EIF, without Thermocouple",1,valve1/5,1,1,21,4,4,177,174
+"EIF, without Thermocouple",1,valve1/6,1,1,60,0,0,176,173
+"EIF, without Thermocouple",1,valve1/7,1,1,7,3,3,178,111
+"EIF, without Thermocouple",1,valve1/8,1,1,3,5,0,172,172
+"EIF, without Thermocouple",1,valve1/9,1,1,0,2,1,174,172
+"EIF, without Thermocouple",1,valve2/0,1,1,0,2,0,162,169
+"EIF, without Thermocouple",1,valve2/1,1,1,34,3,2,160,170
+"EIF, without Thermocouple",1,valve2/2,1,1,0,0,5,165,169
+"EIF, without Thermocouple",1,valve2/3,1,1,9,5,0,164,36
+"EIF, without Thermocouple",2,other/1,1,1,0,1,0,157,0
+"EIF, without Thermocouple",2,other/10,1,1,2,5,0,170,171
+"EIF, without Thermocouple",2,other/11,1,1,2,3,1,170,169
+"EIF, without Thermocouple",2,other/12,1,1,4,6,0,168,171
+"EIF, without Thermocouple",2,other/13,1,1,16,4,3,95,163
+"EIF, without Thermocouple",2,other/14,1,1,4,3,0,171,32
+"EIF, without Thermocouple",2,other/2,1,1,64,0,5,0,292
+"EIF, without Thermocouple",2,other/3,1,1,9,3,0,168,171
+"EIF, without Thermocouple",2,other/4,1,1,3,3,0,396,0
+"EIF, without Thermocouple",2,other/5,1,1,0,0,0,172,173
+"EIF, without Thermocouple",2,other/6,1,1,0,4,0,173,172
+"EIF, without Thermocouple",2,other/7,1,1,1,1,2,172,171
+"EIF, without Thermocouple",2,other/8,1,1,1,4,0,172,172
+"EIF, without Thermocouple",2,other/9,1,1,0,0,0,172,171
+"EIF, without Thermocouple",2,valve1/0,1,1,2,6,0,173,173
+"EIF, without Thermocouple",2,valve1/1,1,1,1,4,0,172,171
+"EIF, without Thermocouple",2,valve1/10,1,1,3,6,6,173,172
+"EIF, without Thermocouple",2,valve1/11,1,1,53,3,0,172,170
+"EIF, without Thermocouple",2,valve1/12,1,1,0,0,1,170,171
+"EIF, without Thermocouple",2,valve1/13,1,1,0,2,3,170,171
+"EIF, without Thermocouple",2,valve1/14,1,1,13,4,6,169,171
+"EIF, without Thermocouple",2,valve1/15,1,1,0,3,0,174,172
+"EIF, without Thermocouple",2,valve1/2,1,1,0,0,2,166,172
+"EIF, without Thermocouple",2,valve1/3,1,1,0,6,4,173,171
+"EIF, without Thermocouple",2,valve1/4,1,1,5,2,2,173,173
+"EIF, without Thermocouple",2,valve1/5,1,1,0,4,6,177,174
+"EIF, without Thermocouple",2,valve1/6,1,1,60,0,0,176,173
+"EIF, without Thermocouple",2,valve1/7,1,1,21,4,1,178,111
+"EIF, without Thermocouple",2,valve1/8,1,1,3,5,0,172,172
+"EIF, without Thermocouple",2,valve1/9,1,1,0,1,0,174,172
+"EIF, without Thermocouple",2,valve2/0,1,1,0,3,0,162,169
+"EIF, without Thermocouple",2,valve2/1,1,1,22,3,1,160,170
+"EIF, without Thermocouple",2,valve2/2,1,1,0,0,5,165,169
+"EIF, without Thermocouple",2,valve2/3,1,1,9,4,0,164,36
+"IF, raw sensors",0,other/1,1,1,20,5,0,157,0
+"IF, raw sensors",0,other/10,1,1,8,5,0,170,171
+"IF, raw sensors",0,other/11,1,1,3,4,0,170,169
+"IF, raw sensors",0,other/12,1,1,0,1,0,168,171
+"IF, raw sensors",0,other/13,1,1,4,1,3,95,163
+"IF, raw sensors",0,other/14,1,1,14,3,0,171,32
+"IF, raw sensors",0,other/2,1,1,3,0,1,0,292
+"IF, raw sensors",0,other/3,1,1,0,4,2,168,171
+"IF, raw sensors",0,other/4,1,1,3,8,0,396,0
+"IF, raw sensors",0,other/5,1,1,1,5,0,172,173
+"IF, raw sensors",0,other/6,1,1,2,3,0,173,172
+"IF, raw sensors",0,other/7,1,1,1,6,2,172,171
+"IF, raw sensors",0,other/8,1,1,7,4,0,172,172
+"IF, raw sensors",0,other/9,1,1,0,3,0,172,171
+"IF, raw sensors",0,valve1/0,1,1,2,6,0,173,173
+"IF, raw sensors",0,valve1/1,1,1,0,6,0,172,171
+"IF, raw sensors",0,valve1/10,1,1,2,5,6,173,172
+"IF, raw sensors",0,valve1/11,1,1,57,3,4,172,170
+"IF, raw sensors",0,valve1/12,1,1,0,1,0,170,171
+"IF, raw sensors",0,valve1/13,1,1,0,3,0,170,171
+"IF, raw sensors",0,valve1/14,1,1,13,5,7,169,171
+"IF, raw sensors",0,valve1/15,1,1,0,7,3,174,172
+"IF, raw sensors",0,valve1/2,1,1,34,4,6,166,172
+"IF, raw sensors",0,valve1/3,1,1,1,4,3,173,171
+"IF, raw sensors",0,valve1/4,1,1,5,4,4,173,173
+"IF, raw sensors",0,valve1/5,1,1,0,3,3,177,174
+"IF, raw sensors",0,valve1/6,1,1,77,3,3,176,173
+"IF, raw sensors",0,valve1/7,1,1,7,4,3,178,111
+"IF, raw sensors",0,valve1/8,1,1,3,4,0,172,172
+"IF, raw sensors",0,valve1/9,1,1,1,2,2,174,172
+"IF, raw sensors",0,valve2/0,1,1,0,2,0,162,169
+"IF, raw sensors",0,valve2/1,1,1,10,5,1,160,170
+"IF, raw sensors",0,valve2/2,1,1,0,2,4,165,169
+"IF, raw sensors",0,valve2/3,1,1,9,5,0,164,36
+"IF, raw sensors",1,other/1,1,1,23,4,0,157,0
+"IF, raw sensors",1,other/10,1,1,8,7,0,170,171
+"IF, raw sensors",1,other/11,1,1,3,5,1,170,169
+"IF, raw sensors",1,other/12,1,1,0,2,0,168,171
+"IF, raw sensors",1,other/13,1,1,5,1,1,95,163
+"IF, raw sensors",1,other/14,1,1,4,3,0,171,32
+"IF, raw sensors",1,other/2,1,1,3,0,1,0,292
+"IF, raw sensors",1,other/3,1,1,9,7,3,168,171
+"IF, raw sensors",1,other/4,1,1,3,8,0,396,0
+"IF, raw sensors",1,other/5,1,1,1,4,1,172,173
+"IF, raw sensors",1,other/6,1,1,2,5,0,173,172
+"IF, raw sensors",1,other/7,1,1,1,4,1,172,171
+"IF, raw sensors",1,other/8,1,1,7,5,0,172,172
+"IF, raw sensors",1,other/9,1,1,0,1,0,172,171
+"IF, raw sensors",1,valve1/0,1,1,2,6,1,173,173
+"IF, raw sensors",1,valve1/1,1,1,0,5,0,172,171
+"IF, raw sensors",1,valve1/10,1,1,3,6,8,173,172
+"IF, raw sensors",1,valve1/11,1,1,46,4,2,172,170
+"IF, raw sensors",1,valve1/12,1,1,0,1,0,170,171
+"IF, raw sensors",1,valve1/13,1,1,0,3,0,170,171
+"IF, raw sensors",1,valve1/14,1,1,13,6,6,169,171
+"IF, raw sensors",1,valve1/15,1,1,0,6,4,174,172
+"IF, raw sensors",1,valve1/2,1,1,38,3,4,166,172
+"IF, raw sensors",1,valve1/3,1,1,0,3,3,173,171
+"IF, raw sensors",1,valve1/4,1,1,5,4,5,173,173
+"IF, raw sensors",1,valve1/5,1,1,0,4,4,177,174
+"IF, raw sensors",1,valve1/6,1,1,46,3,1,176,173
+"IF, raw sensors",1,valve1/7,1,1,7,5,4,178,111
+"IF, raw sensors",1,valve1/8,1,1,3,3,0,172,172
+"IF, raw sensors",1,valve1/9,1,1,1,0,3,174,172
+"IF, raw sensors",1,valve2/0,1,1,0,4,0,162,169
+"IF, raw sensors",1,valve2/1,1,1,8,3,0,160,170
+"IF, raw sensors",1,valve2/2,1,1,0,3,5,165,169
+"IF, raw sensors",1,valve2/3,1,1,9,4,0,164,36
+"IF, raw sensors",2,other/1,1,1,23,3,0,157,0
+"IF, raw sensors",2,other/10,1,1,8,5,0,170,171
+"IF, raw sensors",2,other/11,1,1,3,5,0,170,169
+"IF, raw sensors",2,other/12,1,1,0,2,0,168,171
+"IF, raw sensors",2,other/13,1,1,4,1,1,95,163
+"IF, raw sensors",2,other/14,1,1,13,3,0,171,32
+"IF, raw sensors",2,other/2,1,1,64,0,4,0,292
+"IF, raw sensors",2,other/3,1,1,0,4,2,168,171
+"IF, raw sensors",2,other/4,1,1,3,9,0,396,0
+"IF, raw sensors",2,other/5,1,1,1,2,0,172,173
+"IF, raw sensors",2,other/6,1,1,6,5,0,173,172
+"IF, raw sensors",2,other/7,1,1,1,6,1,172,171
+"IF, raw sensors",2,other/8,1,1,2,4,0,172,172
+"IF, raw sensors",2,other/9,1,1,0,2,0,172,171
+"IF, raw sensors",2,valve1/0,1,1,2,5,0,173,173
+"IF, raw sensors",2,valve1/1,1,1,0,3,0,172,171
+"IF, raw sensors",2,valve1/10,1,1,7,6,5,173,172
+"IF, raw sensors",2,valve1/11,1,1,61,2,3,172,170
+"IF, raw sensors",2,valve1/12,1,1,0,1,0,170,171
+"IF, raw sensors",2,valve1/13,1,1,3,2,2,170,171
+"IF, raw sensors",2,valve1/14,1,1,13,6,6,169,171
+"IF, raw sensors",2,valve1/15,1,1,0,6,4,174,172
+"IF, raw sensors",2,valve1/2,1,1,38,4,4,166,172
+"IF, raw sensors",2,valve1/3,1,1,0,4,2,173,171
+"IF, raw sensors",2,valve1/4,1,1,5,4,5,173,173
+"IF, raw sensors",2,valve1/5,1,1,0,4,2,177,174
+"IF, raw sensors",2,valve1/6,1,1,77,2,2,176,173
+"IF, raw sensors",2,valve1/7,1,1,7,5,4,178,111
+"IF, raw sensors",2,valve1/8,1,1,3,4,0,172,172
+"IF, raw sensors",2,valve1/9,1,1,0,1,3,174,172
+"IF, raw sensors",2,valve2/0,1,1,0,3,0,162,169
+"IF, raw sensors",2,valve2/1,1,1,22,5,0,160,170
+"IF, raw sensors",2,valve2/2,1,1,0,3,5,165,169
+"IF, raw sensors",2,valve2/3,1,1,21,4,0,164,36
+alarm on every row,0,other/1,1,1,0,0,0,157,0
+alarm on every row,0,other/10,1,1,0,0,0,170,171
+alarm on every row,0,other/11,1,1,0,0,0,170,169
+alarm on every row,0,other/12,1,1,0,0,0,168,171
+alarm on every row,0,other/13,1,1,0,0,0,95,163
+alarm on every row,0,other/14,1,1,0,0,0,171,32
+alarm on every row,0,other/2,1,1,0,0,0,0,292
+alarm on every row,0,other/3,1,1,0,0,0,168,171
+alarm on every row,0,other/4,1,1,0,0,0,396,0
+alarm on every row,0,other/5,1,1,0,0,0,172,173
+alarm on every row,0,other/6,1,1,0,0,0,173,172
+alarm on every row,0,other/7,1,1,0,0,0,172,171
+alarm on every row,0,other/8,1,1,0,0,0,172,172
+alarm on every row,0,other/9,1,1,0,0,0,172,171
+alarm on every row,0,valve1/0,1,1,0,0,0,173,173
+alarm on every row,0,valve1/1,1,1,0,0,0,172,171
+alarm on every row,0,valve1/10,1,1,0,0,0,173,172
+alarm on every row,0,valve1/11,1,1,0,0,0,172,170
+alarm on every row,0,valve1/12,1,1,0,0,0,170,171
+alarm on every row,0,valve1/13,1,1,0,0,0,170,171
+alarm on every row,0,valve1/14,1,1,0,0,0,169,171
+alarm on every row,0,valve1/15,1,1,0,0,0,174,172
+alarm on every row,0,valve1/2,1,1,0,0,0,166,172
+alarm on every row,0,valve1/3,1,1,0,0,0,173,171
+alarm on every row,0,valve1/4,1,1,0,0,0,173,173
+alarm on every row,0,valve1/5,1,1,0,0,0,177,174
+alarm on every row,0,valve1/6,1,1,0,0,0,176,173
+alarm on every row,0,valve1/7,1,1,0,0,0,178,111
+alarm on every row,0,valve1/8,1,1,0,0,0,172,172
+alarm on every row,0,valve1/9,1,1,0,0,0,174,172
+alarm on every row,0,valve2/0,1,1,0,0,0,162,169
+alarm on every row,0,valve2/1,1,1,0,0,0,160,170
+alarm on every row,0,valve2/2,1,1,0,0,0,165,169
+alarm on every row,0,valve2/3,1,1,0,0,0,164,36

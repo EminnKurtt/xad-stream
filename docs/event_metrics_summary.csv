@@ -1,0 +1,6 @@
+config,detected_pct,median_delay_s,false_events_per_h_before,false_events_per_h_after,false_events_per_h
+"EIF, raw sensors",100.00,1.00,57.62,17.11,38.30
+"EIF, raw, alarms shuffled in time",100.00,0.00,0.83,2.05,1.41
+"EIF, without Thermocouple",100.00,1.83,60.95,34.67,48.41
+"IF, raw sensors",100.00,2.83,80.50,38.78,60.60
+alarm on every row,100.00,0.00,0.00,0.00,0.00

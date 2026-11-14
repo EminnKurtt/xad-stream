@@ -120,6 +120,57 @@ def false_alarm_positions(y, pred) -> dict:
     return out
 
 
+def runs(mask) -> list[tuple[int, int]]:
+    """Contiguous runs of True as `(start, stop)` index pairs (stop exclusive)."""
+    edges = np.diff(np.r_[0, np.asarray(mask, dtype=int), 0])
+    return list(zip(np.flatnonzero(edges == 1), np.flatnonzero(edges == -1)))
+
+
+def alarm_events(pred, merge_gap: int = 10) -> list[tuple[int, int]]:
+    """Group alarm rows into events; alarms at most `merge_gap` quiet rows apart merge."""
+    idx = np.flatnonzero(np.asarray(pred, dtype=bool))
+    if idx.size == 0:
+        return []
+    breaks = np.flatnonzero(np.diff(idx) - 1 > merge_gap)
+    starts = np.r_[idx[0], idx[breaks + 1]]
+    stops = np.r_[idx[breaks], idx[-1]] + 1
+    return list(zip(starts.tolist(), stops.tolist()))
+
+
+def event_metrics(y, pred, merge_gap: int = 10) -> dict:
+    """Operator-level metrics on the test rows (from `N_TRAIN` on), 1 row = 1 s.
+
+    Per labelled anomaly window: detected if any alarm falls inside it, with the
+    delay from the window start to the first alarm. Alarm events that touch no
+    anomalous row are false-alarm events, counted before the first and after the
+    last anomalous row, together with the normal time there.
+    """
+    y = np.asarray(y)[N_TRAIN:]
+    pred = np.asarray(pred, dtype=bool)[N_TRAIN:]
+    windows = runs(y == 1)
+    delays = []
+    for start, stop in windows:
+        hits = np.flatnonzero(pred[start:stop])
+        if hits.size:
+            delays.append(int(hits[0]))
+    first = windows[0][0] if windows else len(y)
+    last = windows[-1][1] if windows else len(y)
+    false_before = false_after = 0
+    for start, stop in alarm_events(pred, merge_gap):
+        if not y[start:stop].any():
+            false_before += stop <= first
+            false_after += start >= last
+    return {
+        "windows": len(windows),
+        "detected": len(delays),
+        "delays": delays,
+        "false_events_before": false_before,
+        "false_events_after": false_after,
+        "normal_s_before": int((y[:first] == 0).sum()),
+        "normal_s_after": int((y[last:] == 0).sum()),
+    }
+
+
 def split_experiments(names) -> tuple[list[str], list[str]]:
     dev = sorted(n for n in names if n.split("/")[0] in DEV_SCENARIOS)
     test = sorted(n for n in names if n.split("/")[0] not in DEV_SCENARIOS)
