@@ -1,11 +1,19 @@
 split,config,features,smooth,quantile,f1,f1_min,f1_max,far,mar
-all 34,IF default,raw,1.0000,0.9500,0.6040,0.5895,0.6256,23.4488,47.9602
+all 34,IF default raw,raw,1.0000,0.9500,0.6040,0.5895,0.6256,23.4488,47.9602
+all 34,IF default no_thermo,no_thermo,1.0000,0.9500,0.5659,0.5558,0.5827,16.4859,54.9072
+all 34,IF default thermo_rate,thermo_rate,1.0000,0.9500,0.5363,0.5089,0.5609,16.9102,57.9798
 all 34,IF selected,raw,31.0000,0.9500,0.7531,0.7497,0.7568,62.3101,7.1083
-all 34,EIF default,raw,1.0000,0.9500,0.7676,0.7636,0.7698,48.1287,11.8299
+all 34,EIF default raw,raw,1.0000,0.9500,0.7676,0.7636,0.7698,48.1287,11.8299
+all 34,EIF default no_thermo,no_thermo,1.0000,0.9500,0.7592,0.7584,0.7602,31.5267,22.1486
+all 34,EIF default thermo_rate,thermo_rate,1.0000,0.9500,0.7505,0.7476,0.7567,31.2221,23.7366
 all 34,EIF selected,raw,5.0000,1.0000,0.7746,0.7724,0.7762,51.7788,8.5099
 all 34,flag every row,,,,0.6984,0.6984,0.6984,100.0000,0.0000
-held-out (valve2 + other),IF default,raw,1.0000,0.9500,0.6866,0.6786,0.6979,28.4675,34.8654
+held-out (valve2 + other),IF default raw,raw,1.0000,0.9500,0.6866,0.6786,0.6979,28.4675,34.8654
+held-out (valve2 + other),IF default no_thermo,no_thermo,1.0000,0.9500,0.6332,0.6184,0.6461,20.1972,45.5834
+held-out (valve2 + other),IF default thermo_rate,thermo_rate,1.0000,0.9500,0.6155,0.5829,0.6276,20.5521,47.6137
 held-out (valve2 + other),IF selected,raw,31.0000,0.9500,0.7518,0.7501,0.7542,71.0056,2.8505
-held-out (valve2 + other),EIF default,raw,1.0000,0.9500,0.7771,0.7767,0.7777,47.4673,10.4085
+held-out (valve2 + other),EIF default raw,raw,1.0000,0.9500,0.7771,0.7767,0.7777,47.4673,10.4085
+held-out (valve2 + other),EIF default no_thermo,no_thermo,1.0000,0.9500,0.7722,0.7704,0.7751,34.4255,18.4184
+held-out (valve2 + other),EIF default thermo_rate,thermo_rate,1.0000,0.9500,0.7724,0.7693,0.7756,34.7553,18.2018
 held-out (valve2 + other),EIF selected,raw,5.0000,1.0000,0.7773,0.7742,0.7795,51.9627,7.9140
 held-out (valve2 + other),flag every row,,,,0.6985,0.6985,0.6985,100.0000,0.0000

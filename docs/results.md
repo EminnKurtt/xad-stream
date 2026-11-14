@@ -13,28 +13,55 @@ returns exactly the values of SKAB's own `core/metrics.py` `chp_score(metric="bi
 Inside the 400 training rows, models fit on the first 300, and the threshold is a quantile
 of the scores on the last 100.
 
-**Selection.** All 48 settings were evaluated on the 16 valve1 experiments only, with seed 0
-(`skab_grid_dev.csv`). The settings tried: model (IF or EIF), features (raw, or linearly
-detrended on the fitting rows), causal score smoothing (1, 5, 15 or 31 rows) and threshold
-quantile (0.95, 0.99 or 1.0). For each model, the setting with the best valve1 F1 was kept.
+**Selection.** All 96 settings were evaluated on the 16 valve1 experiments only, with seed 0
+(`skab_grid_dev.csv`). The settings tried were:
+- model: IF or EIF;
+- features: raw, linearly detrended on the fitting rows, without Thermocouple, or
+  Thermocouple replaced by its change over 30 rows;
+- causal score smoothing: 1, 5, 15 or 31 rows;
+- threshold quantile: 0.95, 0.99 or 1.0.
 
-**Evaluation.** The defaults and the selected settings were then run with seeds 0–4
-(`skab_final_runs.csv`, means in `skab_final.csv`):
+For each model, the setting with the best valve1 F1 was kept ("selected"). Each feature set
+except detrending was also run with the default post-processing (no smoothing, q 0.95).
+
+**Evaluation.** Those settings were then run with seeds 0–4 (`skab_final_runs.csv`, means in
+`skab_final.csv`):
 
 | split | detector | F1 (min–max over seeds) | FAR, % | MAR, % |
 |---|---|---|---|---|
-| held-out (valve2 + other) | EIF default (raw, no smoothing, q 0.95) | 0.777 (0.777–0.778) | 47.5 | 10.4 |
+| held-out (valve2 + other) | EIF default, raw | 0.777 (0.777–0.778) | 47.5 | 10.4 |
 | held-out (valve2 + other) | EIF selected (raw, smoothing 5, q 1.0) | 0.777 (0.774–0.780) | 52.0 | 7.9 |
-| held-out (valve2 + other) | IF default | 0.687 (0.679–0.698) | 28.5 | 34.9 |
+| held-out (valve2 + other) | EIF default, without Thermocouple | 0.772 (0.770–0.775) | 34.4 | 18.4 |
+| held-out (valve2 + other) | EIF default, Thermocouple 30 s change | 0.772 (0.769–0.776) | 34.8 | 18.2 |
+| held-out (valve2 + other) | IF default, raw | 0.687 (0.679–0.698) | 28.5 | 34.9 |
+| held-out (valve2 + other) | IF default, without Thermocouple | 0.633 (0.618–0.646) | 20.2 | 45.6 |
 | held-out (valve2 + other) | IF selected (raw, smoothing 31, q 0.95) | 0.752 (0.750–0.754) | 71.0 | 2.9 |
 | held-out (valve2 + other) | flag every row | 0.698 | 100.0 | 0.0 |
-| all 34 | EIF default | 0.768 (0.764–0.770) | 48.1 | 11.8 |
+| all 34 | EIF default, raw | 0.768 (0.764–0.770) | 48.1 | 11.8 |
 | all 34 | EIF selected | 0.775 (0.772–0.776) | 51.8 | 8.5 |
-| all 34 | IF default | 0.604 (0.590–0.626) | 23.4 | 48.0 |
+| all 34 | EIF default, without Thermocouple | 0.759 (0.758–0.760) | 31.5 | 22.1 |
+| all 34 | IF default, raw | 0.604 (0.590–0.626) | 23.4 | 48.0 |
 | all 34 | IF selected | 0.753 (0.750–0.757) | 62.3 | 7.1 |
 | all 34 | flag every row | 0.698 | 100.0 | 0.0 |
 
 Findings:
+
+- **Most false alarms come after the anomaly.** Default EIF, seed 0
+  (`false_alarm_positions.csv`):
+  - It flags 1,479 of the 5,769 normal test rows before the labelled anomaly (26 %) and
+    3,890 of the 5,261 after it (74 %). So 72 % of its false alarms fall after the anomaly.
+  - SKAB labels those rows normal again, but the plant has not returned to its starting
+    state. Averaged over the 32 experiments with at least 30 rows after the anomaly,
+    Thermocouple ends 11.5 training-row standard deviations away from its training mean.
+    No other sensor ends more than 1.9 away (`post_anomaly_shift.csv`).
+- **Dropping Thermocouple trades missed anomalies for fewer false alarms.**
+  - It cuts the post-anomaly false-alarm rate from 74 % to 43 %.
+  - On the held-out experiments, FAR drops from 47.5 % to 34.4 %, while F1 barely moves
+    (0.777 to 0.772) and MAR rises from 10.4 % to 18.4 %.
+  - Using Thermocouple's 30 s change instead gives almost the same result.
+  - These variants were proposed after the position analysis above, which covered all 34
+    experiments. Their settings, though, were not tuned on the held-out ones.
+  - For Isolation Forest, dropping Thermocouple lowers F1 (0.687 to 0.633).
 
 - **On F1, EIF is level with the best published methods:** Conv-AE 0.78, MSET 0.78,
   T-squared+Q 0.76 (`skab_leaderboard.csv`, quoted from the SKAB README). Its false-alarm
@@ -43,7 +70,7 @@ Findings:
 - **Tuning on valve1 did not improve the held-out F1** (0.777 for both), and it raised the
   false-alarm rate. For Isolation Forest, tuning chose heavy smoothing. That lifted F1 from
   0.687 to 0.752 on the held-out experiments, but it pushed FAR to 71 %.
-- **Linear detrending, the drift fix, failed.** The best detrended setting on valve1 had
+- **Linear detrending failed.** The best detrended setting on valve1 had
   F1 0.742 (EIF) and 0.744 (IF), against 0.773 and 0.755 raw, and its FAR rose above 70 %.
   Projecting a straight line fitted on 300 rows over the roughly 700 test rows
   overcorrects.

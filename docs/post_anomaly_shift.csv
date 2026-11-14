@@ -1,0 +1,9 @@
+,mean_shift_in_train_std
+Accelerometer1RMS,1.20
+Accelerometer2RMS,0.92
+Current,0.11
+Pressure,0.06
+Temperature,1.94
+Thermocouple,11.48
+Voltage,0.09
+Volume Flow RateRMS,1.21

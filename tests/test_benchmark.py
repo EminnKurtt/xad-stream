@@ -5,7 +5,9 @@ from test_baseline import _synthetic
 from xad.benchmark import (
     FIT_END,
     N_TRAIN,
+    RATE_LAG,
     evaluate,
+    false_alarm_positions,
     features,
     pooled_metrics,
     predict,
@@ -34,6 +36,31 @@ def test_detrend_removes_linear_drift_fitted_on_training_rows():
     assert abs(X[650:, col].mean() - X[:FIT_END, col].mean()) < 0.3
     with pytest.raises(ValueError):
         features(df, "unknown")
+
+
+def test_thermocouple_variants():
+    df = _synthetic()
+    col = list(df.columns).index("Thermocouple")
+    df["Thermocouple"] = 25.0 + 0.1 * np.arange(len(df))  # steady heating
+    raw = features(df, "raw")
+    assert features(df, "no_thermo").shape == (len(df), raw.shape[1] - 1)
+    rate = features(df, "thermo_rate")
+    np.testing.assert_allclose(rate[RATE_LAG:, col], 0.1 * RATE_LAG)  # level removed
+    assert rate[0, col] == 0.0
+    np.testing.assert_array_equal(np.delete(rate, col, 1), np.delete(raw, col, 1))
+
+
+def test_false_alarm_positions():
+    y = np.zeros(N_TRAIN + 10, dtype=int)
+    y[N_TRAIN + 3 : N_TRAIN + 6] = 1  # anomaly rows 403-405
+    pred = np.zeros_like(y, dtype=bool)
+    pred[[0, N_TRAIN + 1, N_TRAIN + 4, N_TRAIN + 7, N_TRAIN + 8]] = True
+    out = false_alarm_positions(y, pred)
+    assert (
+        out["normal_before"] == 3 and out["false_alarms_before"] == 1
+    )  # row 0 is training
+    assert out["normal_after"] == 4 and out["false_alarms_after"] == 2
+    assert out["normal_between"] == 0
 
 
 def test_predict_is_causal_and_uses_calibration_rows():

@@ -25,6 +25,7 @@ leaderboard rows are copied from the
 | Extended Isolation Forest, tuned on valve1 | **this repo** | 0.77 | 51.78 | 8.51 |
 | Extended Isolation Forest, default | **this repo** | 0.77 | 48.13 | 11.83 |
 | T-squared+Q (PCA-based) | SKAB leaderboard | 0.76 | 26.62 | 24.92 |
+| Extended Isolation Forest, without Thermocouple | **this repo** | 0.76 | 31.53 | 22.15 |
 | Isolation Forest, tuned on valve1 | **this repo** | 0.75 | 62.31 | 7.11 |
 | LSTM-AE | SKAB leaderboard | 0.74 | 29.96 | 25.92 |
 | flag every row (trivial reference) | **this repo** | 0.70 | 100.00 | 0.00 |
@@ -47,10 +48,25 @@ What this shows:
   It is a 200-tree forest fit on 300 rows per experiment, with no deep learning. It misses
   few anomalies, but it flags about half of the normal rows. The best deep model (Conv-AE)
   reaches the same F1 with far fewer false alarms.
-- **Tuning does not transfer.** Settings were chosen on the 16 valve1 experiments only.
-  On the 18 held-out experiments the default EIF scores F1 0.777 (FAR 47.5 %), and the setting tuned on valve1 F1 0.777 (FAR 52.0 %).
-  Removing a linear drift fitted on the training rows made results worse. Every setting
-  tried is listed in [`docs/skab_grid_dev.csv`](docs/skab_grid_dev.csv).
+- **Most false alarms come after the anomaly, and the explanations found the cause.**
+  72 % of the default EIF's false alarms fall after the labelled anomaly, where it flags 74 % of the normal rows; without Thermocouple, 43 %.
+  SKAB labels those rows normal again. But the fluid temperature (Thermocouple) has
+  settled at a new level, and the explanation method had already singled it out (see
+  below). Dropping Thermocouple is a better trade-off: on valve1, no raw-sensor EIF setting
+  reaches a false-alarm rate below 35 %, while the EIF without it does (F1 0.757, FAR
+  29.7 %).
+- **Results on experiments never used for any choice.** Settings were chosen on the 16
+  valve1 experiments only. On the 18 held-out ones, tuning the threshold and smoothing did
+  not help, and removing a linear drift made results worse. Dropping Thermocouple cut false
+  alarms by about a quarter, for slightly lower F1. Every setting tried is listed in
+  [`docs/skab_grid_dev.csv`](docs/skab_grid_dev.csv).
+
+| 18 held-out experiments | F1 | FAR, % | MAR, % |
+|---|---|---|---|
+| default EIF | 0.777 | 47.5 | 10.4 |
+| EIF tuned on valve1 | 0.777 | 52.0 | 7.9 |
+| EIF without Thermocouple | 0.772 | 34.4 | 18.4 |
+
 - **The threshold matters as much as the model.** The leaderboard's Isolation Forest
   (F1 0.29) and ours (F1 0.60) use the same algorithm. Ours sets its threshold on held-out
   normal rows; theirs uses a fixed contamination value.
@@ -75,7 +91,8 @@ Across all experiments the result is mixed:
   inside anomaly windows (0.110 outside, 0.217 inside).
 - **Pressure, Voltage and Current** barely change, and they get the lowest share.
 - **Temperature and Thermocouple** get high importance everywhere, so their importance does
-  not single out the anomaly windows.
+  not single out the anomaly windows. For Thermocouple this pointed to the real problem:
+  the detector raises false alarms on it after the anomaly.
 
 ## Method
 
@@ -89,8 +106,11 @@ Across all experiments the result is mixed:
     [`src/xad/eif.py`](src/xad/eif.py), 200 trees, fully extended. It splits on random
     hyperplanes instead of single features (Hariri et al.).
 - **Tuning, done fairly.** Score smoothing (1, 5, 15 or 31 rows), threshold quantile
-  (0.95, 0.99 or 1.0) and linear detrending (on or off) were chosen on the valve1
-  experiments only. They were then evaluated on the held-out valve2 and other experiments.
+  (0.95, 0.99 or 1.0) and features (raw, linearly detrended, without Thermocouple, or
+  Thermocouple as its 30 s change) were chosen on the valve1 experiments only. They were
+  then evaluated on the held-out valve2 and other experiments. One caveat: the
+  Thermocouple variants were proposed after an analysis that looked at all 34 experiments
+  (`scripts/false_alarm_analysis.py`).
 - **Explanations.** `ExtendedIsolationForest.explain` gives a per-sensor importance for every
   row. At each split on the row's path, each sensor gets its share of the split value
   `|n_k (x_k - p_k)|`. That share is weighted by how strongly the split isolates the row
@@ -105,9 +125,10 @@ Across all experiments the result is mixed:
 
 ## Limitations
 
-- **High false-alarm rate.** About half of the normal test rows are flagged, mostly because
-  of slow drift after the short training window. Neither smoothing nor linear detrending
-  fixed this.
+- **High false-alarm rate.** The default EIF flags about half of the normal test rows,
+  mostly after the anomaly, when the plant has settled at a new state. Dropping Thermocouple
+  lowers this to about a third, at the cost of more missed anomalous rows. Smoothing and
+  linear detrending did not help.
 - **Per-experiment fitting.** Every experiment gets its own model, fit on its first 300
   rows (5 minutes at 1 Hz). This is not one model deployed across runs.
 - **Simplified explanations.** See above. The check against "visible change" uses a simple
@@ -121,7 +142,8 @@ Across all experiments the result is mixed:
 make install                          # in a Python 3.12 virtualenv; versions are pinned
 make data                             # clones SKAB into data/raw/SKAB (not committed)
 make test && make lint
-python scripts/skab_benchmark.py      # docs/skab_*.csv, SKAB protocol (about 3 minutes)
+python scripts/skab_benchmark.py      # docs/skab_*.csv, SKAB protocol (about 10 minutes)
+python scripts/false_alarm_analysis.py raw no_thermo thermo_rate   # where false alarms fall
 python scripts/compare_models.py      # docs/compare_if_vs_eif*.csv, per-experiment protocol
 python scripts/run_baseline.py        # docs/baseline_*.csv
 python scripts/explain_skab.py        # docs/explanation_* figures and CSVs
@@ -142,8 +164,10 @@ The leaderboard rows above are quoted from its README. Dataset notes are in
 
 ## Roadmap
 
-- **Reduce false alarms from drift.** Options: refit on recent rows that raised no alarm,
-  or train on SKAB's long anomaly-free recording so normal variation is better covered.
+- **Re-baseline after the plant settles.** When the score stays high but stable for a long
+  time, refit on recent rows, so that a new steady state stops raising alarms. (Training on
+  SKAB's anomaly-free recording would not help: its Thermocouple range does not cover the
+  experiments.)
 - Group consecutive alarms into events.
 - A small dashboard for scores, alarms and sensor importance.
 

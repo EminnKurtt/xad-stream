@@ -8,9 +8,10 @@ import pandas as pd
 
 OURS = {
     "EIF selected": "Extended Isolation Forest, tuned on valve1",
-    "EIF default": "Extended Isolation Forest, default",
+    "EIF default raw": "Extended Isolation Forest, default",
+    "EIF default no_thermo": "Extended Isolation Forest, without Thermocouple",
     "IF selected": "Isolation Forest, tuned on valve1",
-    "IF default": "Isolation Forest, default",
+    "IF default raw": "Isolation Forest, default",
     "flag every row": "flag every row (trivial reference)",
 }
 
@@ -35,9 +36,27 @@ print(
     f"{len(board)} published methods."
 )
 held = final.xs("held-out (valve2 + other)")
-d, s = held.loc["EIF default"], held.loc["EIF selected"]
+print("\n| 18 held-out experiments | F1 | FAR, % | MAR, % |\n|---|---|---|---|")
+for key, label in {
+    "EIF default raw": "default EIF",
+    "EIF selected": "EIF tuned on valve1",
+    "EIF default no_thermo": "EIF without Thermocouple",
+}.items():
+    r = held.loc[key]
+    print(f"| {label} | {r['f1']:.3f} | {r['far']:.1f} | {r['mar']:.1f} |")
+
+fa = (
+    pd.read_csv("docs/false_alarm_positions.csv")
+    .groupby("features")
+    .sum(numeric_only=True)
+)
+share = 100 * fa["false_alarms_after"] / fa["normal_after"]
+total = fa[["false_alarms_before", "false_alarms_between", "false_alarms_after"]].sum(
+    axis=1
+)
 print(
-    f"On the 18 held-out experiments the default EIF scores F1 {d['f1']:.3f} "
-    f"(FAR {d['far']:.1f} %), and the setting tuned on valve1 F1 {s['f1']:.3f} "
-    f"(FAR {s['far']:.1f} %)."
+    f"\n{100 * fa.loc['raw', 'false_alarms_after'] / total['raw']:.0f} % of the default "
+    f"EIF's false alarms fall after the labelled anomaly, where it flags "
+    f"{share['raw']:.0f} % of the normal rows; without Thermocouple, "
+    f"{share['no_thermo']:.0f} %."
 )

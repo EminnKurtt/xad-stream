@@ -52,10 +52,13 @@ grid = pd.DataFrame(
 ).sort_values("f1", ascending=False, kind="stable")
 grid.to_csv("docs/skab_grid_dev.csv", index=False, float_format="%.4f")
 
-# 2. per model: the default setting and the one with the best F1 on valve1
+# 2. per model: the default post-processing (no smoothing, 0.95 quantile) for each
+#    feature set except detrend (already ruled out), and the best setting on valve1
 configs = {}
 for m in MODELS:
-    configs[f"{m} default"] = (m, "raw", 1, 0.95)
+    for k in FEATURES:
+        if k != "detrend":
+            configs[f"{m} default {k}"] = (m, k, 1, 0.95)
     best = grid[grid["model"] == m].iloc[0]
     configs[f"{m} selected"] = (
         m,

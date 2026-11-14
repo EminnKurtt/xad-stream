@@ -10,8 +10,12 @@ Inside the 400 training rows our detectors fit on the first 300 and set the
 alarm threshold on the last 100 (the calibration rows), so every choice below
 is made from training data only:
 
-- `features`: raw sensors, or sensors minus a per-sensor linear trend fitted on
-  the 300 fitting rows (targets slow drift, e.g. the fluid heating up).
+- `features`: `raw` sensors; `detrend` subtracts a per-sensor linear trend
+  fitted on the 300 fitting rows (targets slow drift, e.g. the fluid heating
+  up); `no_thermo` drops Thermocouple; `thermo_rate` replaces the Thermocouple
+  level by its change over the last `RATE_LAG` rows. The Thermocouple
+  variants target the fluid temperature, which settles at a new level after
+  an anomaly (see `scripts/false_alarm_analysis.py`).
 - `smooth`: causal moving average of the score over the last `smooth` rows.
 - `quantile`: of the smoothed calibration scores, used as alarm threshold.
 """
@@ -28,7 +32,9 @@ from xad.data import SENSOR_COLUMNS
 N_TRAIN = 400
 FIT_END = N_TRAIN - int(N_TRAIN * PROTOCOL["calib_frac"])  # 300
 MODELS = {"IF": IsolationForestDetector, "EIF": make_eif}
-FEATURES = ("raw", "detrend")
+FEATURES = ("raw", "detrend", "no_thermo", "thermo_rate")
+RATE_LAG = 30
+_THERMO = SENSOR_COLUMNS.index("Thermocouple")
 SMOOTH = (1, 5, 15, 31)
 QUANTILES = (0.95, 0.99, 1.0)
 DEV_SCENARIOS = ("valve1",)  # choices are made here; valve2 + other are held out
@@ -40,6 +46,13 @@ def features(df_exp: pd.DataFrame, kind: str) -> np.ndarray:
         t = np.arange(len(X), dtype=float)
         slope, intercept = np.polyfit(t[:FIT_END], X[:FIT_END], 1)
         return X - (np.outer(t, slope) + intercept)
+    if kind == "no_thermo":
+        return np.delete(X, _THERMO, axis=1)
+    if kind == "thermo_rate":
+        thermo = X[:, _THERMO]
+        lagged = thermo[np.maximum(np.arange(len(X)) - RATE_LAG, 0)]
+        X[:, _THERMO] = thermo - lagged
+        return X
     if kind != "raw":
         raise ValueError(f"unknown features: {kind}")
     return X
@@ -86,6 +99,25 @@ def evaluate(
         (labels[e][N_TRAIN:], predict(scores[e], smooth, quantile)[N_TRAIN:])
         for e in experiments
     )
+
+
+def false_alarm_positions(y, pred) -> dict:
+    """Normal test rows and false alarms before and after the labelled anomaly rows."""
+    y, pred = np.asarray(y), np.asarray(pred, dtype=bool)
+    idx = np.arange(len(y))
+    anomalous = np.flatnonzero(y == 1)
+    normal = (idx >= N_TRAIN) & (y == 0)
+    before = idx < (anomalous[0] if anomalous.size else len(y))
+    after = idx > (anomalous[-1] if anomalous.size else len(y))
+    out = {}
+    for name, where in {
+        "before": before,
+        "after": after,
+        "between": ~before & ~after,
+    }.items():
+        out[f"normal_{name}"] = int((normal & where).sum())
+        out[f"false_alarms_{name}"] = int((normal & where & pred).sum())
+    return out
 
 
 def split_experiments(names) -> tuple[list[str], list[str]]:
