@@ -27,7 +27,7 @@ readme_matches_csvs() {
     local line
     while IFS= read -r line; do
         [ -z "$line" ] && continue
-        grep -qxF -- "$line" README.md || return 1
+        sed 's/^ *//' README.md | grep -qxF -- "$line" || return 1  # list items are indented
     done < <(python scripts/results_table.py)
 }
 
