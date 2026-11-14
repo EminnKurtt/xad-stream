@@ -46,6 +46,19 @@ Alarm log format:
 consumer ALARM row=<row> score=<score> > <threshold> | top: <sensor> <share>, <sensor> <share>, <sensor> <share> | label=<0|1>
 ```
 
+## Verified run
+
+The stack was tested end-to-end with Docker 29.9.3 and Compose v5.7.0, on `valve1/0` at
+`RATE=10` and at `RATE=0`. Both runs ended with the same consumer summary, which equals an
+offline replay of the same rows through `StreamingDetector`:
+
+```text
+consumer end of stream: 747 rows scored, 580 alarms (377 on labelled-anomalous rows), 401 labelled-anomalous rows
+```
+
+About a third of the alarms fall on normal rows before the labelled window. They are driven
+by Thermocouple drift after the warm-up, the same effect described in `results.md`.
+
 ## Limitations
 
 - **The warm-up assumption is labels-free but strong.** It holds for 33 of the 34

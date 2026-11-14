@@ -19,6 +19,7 @@ def main() -> None:
     parser.add_argument("--warmup", type=int, default=int(env("WARMUP", "400")))
     args = parser.parse_args()
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(name)s %(message)s")
+    logging.getLogger("kafka").setLevel(logging.WARNING)  # hide connection chatter
 
     consumer = KafkaConsumer(
         args.topic,
@@ -29,6 +30,7 @@ def main() -> None:
     detector = StreamingDetector(warmup=args.warmup)
     log.info("warm-up: the first %d rows are assumed normal", args.warmup)
     counts = {"scored": 0, "alarms": 0, "true_alarms": 0, "anomalous": 0}
+    expected_row = 0
 
     for record in consumer:
         try:
@@ -39,6 +41,9 @@ def main() -> None:
         except (KeyError, TypeError, ValueError) as err:
             log.warning("skipping bad message at offset %d: %r", record.offset, err)
             continue
+        if message.get("row") != expected_row:
+            log.warning("row %s arrived, expected %d", message.get("row"), expected_row)
+        expected_row += 1
         if result is None:
             if detector.ready:
                 log.info("warm-up done, threshold %.3f", detector.threshold)
