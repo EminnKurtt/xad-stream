@@ -1,12 +1,68 @@
 # Results
 
 All numbers below come from the CSV files in this folder. Regenerate them with
-`python scripts/run_baseline.py`, `python scripts/compare_models.py` and
-`python scripts/explain_skab.py`.
-Every metric is a mean over the 34 labelled SKAB experiments, computed on the rows after
-each experiment's known-normal prefix.
+`python scripts/skab_benchmark.py`, `python scripts/compare_models.py`,
+`python scripts/run_baseline.py` and `python scripts/explain_skab.py`.
 
-## Isolation Forest vs Extended Isolation Forest
+## Main result: SKAB benchmark protocol
+
+`python scripts/skab_benchmark.py` follows SKAB's outlier-detection protocol. In each
+experiment the first 400 rows are for training and the rest for testing. TP, FP, FN and TN
+are pooled over all test rows. On the same predictions, `xad.benchmark.pooled_metrics`
+returns exactly the values of SKAB's own `core/metrics.py` `chp_score(metric="binary")`.
+Inside the 400 training rows, models fit on the first 300, and the threshold is a quantile
+of the scores on the last 100.
+
+**Selection.** All 48 settings were evaluated on the 16 valve1 experiments only, with seed 0
+(`skab_grid_dev.csv`). The settings tried: model (IF or EIF), features (raw, or linearly
+detrended on the fitting rows), causal score smoothing (1, 5, 15 or 31 rows) and threshold
+quantile (0.95, 0.99 or 1.0). For each model, the setting with the best valve1 F1 was kept.
+
+**Evaluation.** The defaults and the selected settings were then run with seeds 0–4
+(`skab_final_runs.csv`, means in `skab_final.csv`):
+
+| split | detector | F1 (min–max over seeds) | FAR, % | MAR, % |
+|---|---|---|---|---|
+| held-out (valve2 + other) | EIF default (raw, no smoothing, q 0.95) | 0.777 (0.777–0.778) | 47.5 | 10.4 |
+| held-out (valve2 + other) | EIF selected (raw, smoothing 5, q 1.0) | 0.777 (0.774–0.780) | 52.0 | 7.9 |
+| held-out (valve2 + other) | IF default | 0.687 (0.679–0.698) | 28.5 | 34.9 |
+| held-out (valve2 + other) | IF selected (raw, smoothing 31, q 0.95) | 0.752 (0.750–0.754) | 71.0 | 2.9 |
+| held-out (valve2 + other) | flag every row | 0.698 | 100.0 | 0.0 |
+| all 34 | EIF default | 0.768 (0.764–0.770) | 48.1 | 11.8 |
+| all 34 | EIF selected | 0.775 (0.772–0.776) | 51.8 | 8.5 |
+| all 34 | IF default | 0.604 (0.590–0.626) | 23.4 | 48.0 |
+| all 34 | IF selected | 0.753 (0.750–0.757) | 62.3 | 7.1 |
+| all 34 | flag every row | 0.698 | 100.0 | 0.0 |
+
+Findings:
+
+- **On F1, EIF is level with the best published methods:** Conv-AE 0.78, MSET 0.78,
+  T-squared+Q 0.76 (`skab_leaderboard.csv`, quoted from the SKAB README). Its false-alarm
+  rate, though, is higher than all four top methods: 48 % against 13.55–39.73 %. EIF
+  reaches its F1 through recall, not precision.
+- **Tuning on valve1 did not improve the held-out F1** (0.777 for both), and it raised the
+  false-alarm rate. For Isolation Forest, tuning chose heavy smoothing. That lifted F1 from
+  0.687 to 0.752 on the held-out experiments, but it pushed FAR to 71 %.
+- **Linear detrending, the drift fix, failed.** The best detrended setting on valve1 had
+  F1 0.742 (EIF) and 0.744 (IF), against 0.773 and 0.755 raw, and its FAR rose above 70 %.
+  Projecting a straight line fitted on 300 rows over the roughly 700 test rows
+  overcorrects.
+- **F1 on SKAB is dominated by how many rows are anomalous.** Flagging every row scores
+  0.698, above 6 of the 10 published methods (T-squared, LSTM-VAE, Vanilla LSTM, MSCRED,
+  Vanilla AE, Isolation forest). Results on SKAB should always report FAR and MAR next
+  to F1.
+- **The threshold matters as much as the model.** The leaderboard's Isolation Forest scores
+  F1 0.29; it uses a fixed contamination of 0.0005, as in SKAB's
+  `notebooks/isolation_forest.ipynb`. Our Isolation Forest scores 0.604 with a threshold
+  calibrated on held-out training rows.
+
+## Per-experiment protocol (earlier analysis)
+
+The sections below use the earlier protocol. The normal prefix ends 5 rows before the first
+labelled anomaly, which uses the labels, and metrics are averaged per experiment rather
+than pooled. The numbers are therefore not comparable with the SKAB leaderboard.
+
+### Isolation Forest vs Extended Isolation Forest
 
 Same protocol for both models. Each is fit on the first 75 % of the normal prefix, and the
 threshold is the 0.95 quantile of the scores on the held-out last 25 %
@@ -24,7 +80,21 @@ flagging every row already gives F1 0.702. EIF beats that reference and Isolatio
 does not. Most of EIF's F1 gain comes from recall: with the same quantile, its
 threshold flags many more rows. The threshold-free ROC AUC improves less, from 0.732 to 0.796.
 
+### Isolation Forest variants (0.99 quantile)
+
+Means of `baseline_raw.csv`, `baseline_raw_calib.csv` and `baseline_rolling30.csv`:
+
+| Isolation Forest variant | precision | recall | F1 | ROC AUC |
+|---|---|---|---|---|
+| 8 sensors, threshold on training scores | 0.740 | 0.419 | 0.498 | 0.742 |
+| 8 sensors, threshold on held-out 25 % | 0.720 | 0.316 | 0.397 | 0.732 |
+| 8 sensors + 30 s rolling mean/std | 0.603 | 0.346 | 0.355 | 0.733 |
+
+Rolling-window features did not help, and neither did a held-out threshold at this quantile.
+
 ## Do the explanations point to the right sensors?
+
+(The explanations use the per-experiment protocol above.)
 
 `explain` is a simplified heuristic inspired by ExIFFI, not ExIFFI itself (see
 `src/xad/eif.py`). Raw importance is smaller for rows that are easy to isolate,

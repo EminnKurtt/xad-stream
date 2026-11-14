@@ -7,44 +7,65 @@ Explainable anomaly detection on industrial sensor data, evaluated on the public
 Industrial machines are monitored by many sensors, and faults are rare and often unlabelled.
 An alarm is more useful when it also says *which sensors* look wrong. XAD-Stream fits
 unsupervised isolation-based detectors to normal operation and flags deviations. It also
-attributes each anomaly score to individual sensors, and it checks honestly whether those
-attributions point to the sensors that actually change.
+attributes each anomaly score to individual sensors, checks honestly whether those attributions
+point to the sensors that actually change, and replays the data as a stream.
 
 ## Results
 
-Mean over the 34 labelled SKAB experiments, computed on the rows after each experiment's
-normal prefix. Both models use the same protocol (see Method). The reference row flags every
-row as anomalous: more than half of the evaluated rows are anomalous, so any useful detector
-has to beat it.
+These results use SKAB's own outlier-detection protocol. In each of the 34 experiments, the
+first 400 rows are for training and the rest for testing. Metrics pool all test rows. Our
+metric code reproduces SKAB's `chp_score` exactly. Our numbers are means over 5 seeds; the
+leaderboard rows are copied from the
+[SKAB README](https://github.com/waico/SKAB#outlier-detection-problem).
 
-| model | precision | recall | F1 | ROC AUC |
+| detector | source | F1 | FAR, % | MAR, % |
 |---|---|---|---|---|
-| Isolation Forest | 0.702 | 0.521 | 0.563 | 0.732 |
-| Extended Isolation Forest | 0.696 | 0.890 | 0.770 | 0.796 |
-| flag every row (reference) | 0.542 | 1.000 | 0.702 | 0.500 |
+| Conv-AE | SKAB leaderboard | 0.78 | 13.55 | 28.02 |
+| MSET | SKAB leaderboard | 0.78 | 39.73 | 14.13 |
+| Extended Isolation Forest, tuned on valve1 | **this repo** | 0.77 | 51.78 | 8.51 |
+| Extended Isolation Forest, default | **this repo** | 0.77 | 48.13 | 11.83 |
+| T-squared+Q (PCA-based) | SKAB leaderboard | 0.76 | 26.62 | 24.92 |
+| Isolation Forest, tuned on valve1 | **this repo** | 0.75 | 62.31 | 7.11 |
+| LSTM-AE | SKAB leaderboard | 0.74 | 29.96 | 25.92 |
+| flag every row (trivial reference) | **this repo** | 0.70 | 100.00 | 0.00 |
+| T-squared | SKAB leaderboard | 0.66 | 19.21 | 42.60 |
+| Isolation Forest, default | **this repo** | 0.60 | 23.45 | 47.96 |
+| LSTM-VAE | SKAB leaderboard | 0.56 | 9.13 | 55.03 |
+| Vanilla LSTM | SKAB leaderboard | 0.54 | 12.54 | 59.53 |
+| Vanilla AE | SKAB leaderboard | 0.39 | 2.59 | 75.15 |
+| MSCRED | SKAB leaderboard | 0.36 | 49.94 | 69.88 |
+| Isolation forest | SKAB leaderboard | 0.29 | 2.56 | 82.89 |
 
-EIF has a higher F1 than Isolation Forest in 29 of 34 experiments.
+FAR is the share of normal rows flagged; MAR is the share of anomalous rows missed.
 
-Most of EIF's F1 gain comes from recall. The threshold-free ROC AUC improves less.
-Isolation Forest variants explored earlier, with a stricter 0.99 quantile threshold:
+What this shows:
 
-| Isolation Forest variant (0.99 quantile) | precision | recall | F1 | ROC AUC |
-|---|---|---|---|---|
-| 8 sensors, threshold on training scores | 0.740 | 0.419 | 0.498 | 0.742 |
-| 8 sensors, threshold on held-out 25 % | 0.720 | 0.316 | 0.397 | 0.732 |
-| 8 sensors + 30 s rolling mean/std | 0.603 | 0.346 | 0.355 | 0.733 |
+- **F1 alone is a weak ranking on SKAB.** More than half of the test rows are anomalous.
+  Flagging every row scores F1 0.70, above 6 of the 10 published methods.
+  FAR and MAR have to be read alongside F1.
+- **The Extended Isolation Forest matches the best published F1, but with more false alarms.**
+  It is a 200-tree forest fit on 300 rows per experiment, with no deep learning. It misses
+  few anomalies, but it flags about half of the normal rows. The best deep model (Conv-AE)
+  reaches the same F1 with far fewer false alarms.
+- **Tuning does not transfer.** Settings were chosen on the 16 valve1 experiments only.
+  On the 18 held-out experiments the default EIF scores F1 0.777 (FAR 47.5 %), and the setting tuned on valve1 F1 0.777 (FAR 52.0 %).
+  Removing a linear drift fitted on the training rows made results worse. Every setting
+  tried is listed in [`docs/skab_grid_dev.csv`](docs/skab_grid_dev.csv).
+- **The threshold matters as much as the model.** The leaderboard's Isolation Forest
+  (F1 0.29) and ours (F1 0.60) use the same algorithm. Ours sets its threshold on held-out
+  normal rows; theirs uses a fixed contamination value.
 
-Rolling-window features did not help, and neither did a held-out threshold at this quantile.
-Per-experiment numbers are in [`docs/`](docs/), and the full write-up is in
+Full write-up, including per-experiment results and the explanation analysis:
 [`docs/results.md`](docs/results.md).
 
 ### Explanations
 
 ![EIF score, sensor importance and Temperature for SKAB valve1/0](docs/explanation_valve1_0.png)
 
-For `valve1/0`, Temperature importance rises during the labelled temperature drop.
-Thermocouple importance is already high before the anomaly, because the sensor drifts away
-from the short training window and pushes the score towards the threshold.
+The false alarms have a visible cause. In `valve1/0`, Temperature importance rises during
+the labelled temperature drop. But Thermocouple importance is already high before the
+anomaly: the fluid temperature drifts away from the short training window and pushes the
+score over the threshold. The explanation shows *why* the detector raises those false alarms.
 
 ![Share of importance per sensor inside and outside anomaly windows](docs/explanation_summary.png)
 
@@ -58,19 +79,18 @@ Across all experiments the result is mixed:
 
 ## Method
 
-- **Data protocol, per experiment.** Each SKAB experiment starts with normal operation. The
-  first rows (up to 400, ending 5 rows before the first labelled anomaly) are the
-  known-normal prefix. The model is fit on the first 75 % of the prefix, after
-  standardisation on the same rows.
-- **Threshold calibration.** The alarm threshold is the 0.95 quantile of the scores on the
-  held-out last 25 % of the prefix. In-sample scores are optimistically low.
-- **Evaluation.** Metrics are computed on all rows after the prefix, per experiment, and then
-  averaged.
+- **Protocol.** SKAB's protocol: per experiment, the first 400 rows are for training and
+  the rest for testing. No labels are used for training. Inside the training rows, the
+  scaler and the model are fit on the first 300, and the alarm threshold is a quantile of
+  the scores on the last 100.
 - **Models.**
   - **Isolation Forest:** scikit-learn, 200 trees.
   - **Extended Isolation Forest:** implemented from scratch in
     [`src/xad/eif.py`](src/xad/eif.py), 200 trees, fully extended. It splits on random
     hyperplanes instead of single features (Hariri et al.).
+- **Tuning, done fairly.** Score smoothing (1, 5, 15 or 31 rows), threshold quantile
+  (0.95, 0.99 or 1.0) and linear detrending (on or off) were chosen on the valve1
+  experiments only. They were then evaluated on the held-out valve2 and other experiments.
 - **Explanations.** `ExtendedIsolationForest.explain` gives a per-sensor importance for every
   row. At each split on the row's path, each sensor gets its share of the split value
   `|n_k (x_k - p_k)|`. That share is weighted by how strongly the split isolates the row
@@ -79,33 +99,35 @@ Across all experiments the result is mixed:
   **What it is not:** this is a simplified heuristic *inspired by* ExIFFI. It is not a
   reimplementation of ExIFFI or DIFFI, and it has not been validated beyond the checks in
   [`docs/results.md`](docs/results.md).
+- **Streaming.** A Redpanda and Docker Compose demo replays an experiment row by row. It
+  uses the same 300 + 100 warm-up, and it logs alarms with their top sensors. See
+  [`docs/streaming.md`](docs/streaming.md).
 
 ## Limitations
 
-- **Per-experiment fitting.** Every experiment gets its own model, fit on its own beginning.
-  This is not one model deployed across runs.
-- **Short normal prefix.** At most 400 rows (400 s at 1 Hz), and only 75 % of them for
-  fitting. Slow drift after the prefix causes false alarms, and it inflates the
-  importance of drifting sensors.
+- **High false-alarm rate.** About half of the normal test rows are flagged, mostly because
+  of slow drift after the short training window. Neither smoothing nor linear detrending
+  fixed this.
+- **Per-experiment fitting.** Every experiment gets its own model, fit on its first 300
+  rows (5 minutes at 1 Hz). This is not one model deployed across runs.
 - **Simplified explanations.** See above. The check against "visible change" uses a simple
   mean difference, which misses changes in variance or in correlations.
-- **High anomaly rate.** About half of the evaluated rows are anomalous, so F1 must be read
-  against the flag-everything reference.
-- **Streaming is a demo only.** The results above are offline. The streaming demo replays
-  recorded data with a fixed model and has no separate evaluation.
+- **Streaming is a demo only.** It replays recorded data with a fixed model and has no
+  separate evaluation.
 
 ## Reproduce
 
 ```bash
-make install                          # in a Python 3.11+ virtualenv
+make install                          # in a Python 3.12 virtualenv; versions are pinned
 make data                             # clones SKAB into data/raw/SKAB (not committed)
 make test && make lint
+python scripts/skab_benchmark.py      # docs/skab_*.csv, SKAB protocol (about 3 minutes)
+python scripts/compare_models.py      # docs/compare_if_vs_eif*.csv, per-experiment protocol
 python scripts/run_baseline.py        # docs/baseline_*.csv
-python scripts/compare_models.py      # docs/compare_if_vs_eif*.csv (under a minute)
 python scripts/explain_skab.py        # docs/explanation_* figures and CSVs
-python scripts/results_table.py       # the README tables, from the CSVs
+python scripts/results_table.py       # the README table, from the CSVs
 bash scripts/check_project.sh         # tests, lint, clean tree, README matches CSVs
-make stream                           # streaming demo in Docker Compose (docs/streaming.md)
+make stream                           # streaming demo in Docker Compose
 ```
 
 All runs are seeded. The tests use synthetic data and do not need SKAB.
@@ -115,15 +137,14 @@ All runs are seeded. The tests use synthetic data and do not need SKAB.
 [SKAB, the Skoltech Anomaly Benchmark](https://github.com/waico/SKAB) (Katser and Kozitsin,
 2020) records 8 sensors at 1 Hz on a water-circulation test bench. SKAB is licensed under
 **GPL-3.0**. This repository **downloads it at build time and does not redistribute it**.
-Dataset notes are in [`docs/data.md`](docs/data.md).
+The leaderboard rows above are quoted from its README. Dataset notes are in
+[`docs/data.md`](docs/data.md).
 
 ## Roadmap
 
-- **v0.2 preview, available now:** a streaming replay. A producer sends a SKAB experiment
-  to a Redpanda topic, and a consumer scores each row with the EIF and logs alarms with
-  their top sensors. It runs in Docker Compose (`make stream`); see
-  [`docs/streaming.md`](docs/streaming.md).
-- Alarm grouping and periodic refitting to handle slow drift.
+- **Reduce false alarms from drift.** Options: refit on recent rows that raised no alarm,
+  or train on SKAB's long anomaly-free recording so normal variation is better covered.
+- Group consecutive alarms into events.
 - A small dashboard for scores, alarms and sensor importance.
 
 ## References
@@ -137,7 +158,8 @@ Dataset notes are in [`docs/data.md`](docs/data.md).
 - M. Carletti, M. Terzi, G. A. Susto. *Interpretable Anomaly Detection with DIFFI:
   Depth-based Isolation Forest Feature Importance.*
   [arXiv:2007.11117](https://arxiv.org/abs/2007.11117)
-- SKAB: <https://github.com/waico/SKAB>
+- I. D. Katser, V. O. Kozitsin. *Skoltech Anomaly Benchmark (SKAB)*, 2020.
+  <https://github.com/waico/SKAB>
 
 ## License
 

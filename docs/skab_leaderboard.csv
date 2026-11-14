@@ -1,0 +1,13 @@
+algorithm,f1,far,mar
+Perfect detector,1,0,0
+Conv-AE,0.78,13.55,28.02
+MSET,0.78,39.73,14.13
+T-squared+Q (PCA-based),0.76,26.62,24.92
+LSTM-AE,0.74,29.96,25.92
+T-squared,0.66,19.21,42.6
+LSTM-VAE,0.56,9.13,55.03
+Vanilla LSTM,0.54,12.54,59.53
+MSCRED,0.36,49.94,69.88
+Vanilla AE,0.39,2.59,75.15
+Isolation forest,0.29,2.56,82.89
+Null detector,0,0,100

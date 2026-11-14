@@ -1,0 +1,41 @@
+config,model,features,smooth,quantile,split,seed,f1,far,mar
+IF default,IF,raw,1,0.9500,held-out (valve2 + other),0,0.6871,29.4856,34.3392
+IF default,IF,raw,1,0.9500,all 34,0,0.5990,23.7987,48.4614
+IF default,IF,raw,1,0.9500,held-out (valve2 + other),1,0.6979,28.6611,33.1322
+IF default,IF,raw,1,0.9500,all 34,1,0.6256,23.2820,45.3293
+IF default,IF,raw,1,0.9500,held-out (valve2 + other),2,0.6882,28.7327,34.5249
+IF default,IF,raw,1,0.9500,all 34,2,0.6088,24.0979,47.1302
+IF default,IF,raw,1,0.9500,held-out (valve2 + other),3,0.6813,27.2988,36.1653
+IF default,IF,raw,1,0.9500,all 34,3,0.5895,23.2185,49.8238
+IF default,IF,raw,1,0.9500,held-out (valve2 + other),4,0.6786,28.1592,36.1653
+IF default,IF,raw,1,0.9500,all 34,4,0.5970,22.8468,49.0565
+IF selected,IF,raw,31,0.9500,held-out (valve2 + other),0,0.7517,71.9484,2.3677
+IF selected,IF,raw,31,0.9500,all 34,0,0.7532,63.4089,6.5069
+IF selected,IF,raw,31,0.9500,held-out (valve2 + other),1,0.7501,70.7116,3.3581
+IF selected,IF,raw,31,0.9500,all 34,1,0.7517,62.5023,7.2821
+IF selected,IF,raw,31,0.9500,held-out (valve2 + other),2,0.7542,69.0267,3.3736
+IF selected,IF,raw,31,0.9500,all 34,2,0.7539,58.5222,8.9186
+IF selected,IF,raw,31,0.9500,held-out (valve2 + other),3,0.7513,70.3890,3.2652
+IF selected,IF,raw,31,0.9500,all 34,3,0.7497,63.8894,6.9533
+IF selected,IF,raw,31,0.9500,held-out (valve2 + other),4,0.7515,72.9521,1.8880
+IF selected,IF,raw,31,0.9500,all 34,4,0.7568,63.2276,5.8805
+EIF default,EIF,raw,1,0.9500,held-out (valve2 + other),0,0.7777,47.1052,10.5076
+EIF default,EIF,raw,1,0.9500,all 34,0,0.7695,48.6763,11.1816
+EIF default,EIF,raw,1,0.9500,held-out (valve2 + other),1,0.7768,47.4279,10.4921
+EIF default,EIF,raw,1,0.9500,all 34,1,0.7664,47.8785,12.1760
+EIF default,EIF,raw,1,0.9500,held-out (valve2 + other),2,0.7767,48.0373,10.1826
+EIF default,EIF,raw,1,0.9500,all 34,2,0.7698,48.2865,11.3304
+EIF default,EIF,raw,1,0.9500,held-out (valve2 + other),3,0.7768,47.9297,10.2136
+EIF default,EIF,raw,1,0.9500,all 34,3,0.7636,47.7425,12.7711
+EIF default,EIF,raw,1,0.9500,held-out (valve2 + other),4,0.7777,46.8364,10.6469
+EIF default,EIF,raw,1,0.9500,all 34,4,0.7685,48.0598,11.6905
+EIF selected,EIF,raw,5,1.0000,held-out (valve2 + other),0,0.7775,51.9448,7.8768
+EIF selected,EIF,raw,5,1.0000,all 34,0,0.7754,52.4841,7.9868
+EIF selected,EIF,raw,5,1.0000,held-out (valve2 + other),1,0.7779,51.7835,7.8923
+EIF selected,EIF,raw,5,1.0000,all 34,1,0.7724,51.0879,9.3258
+EIF selected,EIF,raw,5,1.0000,held-out (valve2 + other),2,0.7742,52.5363,8.1863
+EIF selected,EIF,raw,5,1.0000,all 34,2,0.7756,51.6954,8.3627
+EIF selected,EIF,raw,5,1.0000,held-out (valve2 + other),3,0.7772,51.7476,8.0470
+EIF selected,EIF,raw,5,1.0000,all 34,3,0.7737,51.1061,9.0674
+EIF selected,EIF,raw,5,1.0000,held-out (valve2 + other),4,0.7795,51.8014,7.5673
+EIF selected,EIF,raw,5,1.0000,all 34,4,0.7762,52.5204,7.8067
